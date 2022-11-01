@@ -1,0 +1,63 @@
+<!--
+ - Created by yurii.bubis on 10/27/2022.
+ -->
+
+<!-- Paginator Parent -->
+<template>
+<!--    <lightning-layout>-->
+<!--        <lightning-layout-item size="6" class="slds-m-right_small">-->
+            <lightning-input type="search"
+                             name="enter-position-name"
+                             label="Search by position name"
+                             onchange={handleSearchChange}
+                             value={searchKey}
+            ></lightning-input>
+            <lightning-slider
+                    label="Minimal Salary"
+                    step="100"
+                    value={startSliderValue}
+                    onchange={handleSliderChange}
+                    min="0"
+                    max={maxSalaryValue}
+            ></lightning-slider>
+            <lightning-input type="date"
+                             name="input-date"
+                             label="Newer or equal than this date"
+                             max={today}
+                             onchange={handleDateChange}
+            ></lightning-input>
+<!--            <template if:true={selectedPosition}>-->
+<!--                <div class="info slds-p-around_medium slds-m-vertical_x-small">-->
+<!--                    <h1>{selectedPosition.Name}</h1>-->
+<!--                    <template for:each={selectedPositionList} for:item="position">-->
+<!--                        <div class="slds-grid slds-gutters column" key={position.key}>-->
+<!--                            <div class="slds-col column slds-size_3-of-12">-->
+<!--                                <p>{position.key}</p>-->
+<!--                            </div>-->
+<!--                            <div class="slds-col column slds-size_9-of-12">-->
+<!--                                <p>{position.value}</p>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </template>-->
+<!--                    <button class="slds-button slds-button_brand slds-button_stretch slds-m-top_small"-->
+<!--                            onclick={handleModalForm}>-->
+<!--                        Apply for this position-->
+<!--                    </button>-->
+<!--                </div>-->
+<!--            </template>-->
+<!--        </lightning-layout-item>-->
+<!--        <lightning-layout-item size="6">-->
+            <template for:each={allPositions} for:item=position>
+                <c-job-position-tile
+                        class="slds-m-vertical_small"
+                        key={position.Id}
+                        position={position}
+                        onapply={handleApply}
+                        onselectedposition={handleSelectedPosition}
+                ></c-job-position-tile>
+            </template>
+            <p class="slds-m-vertical_medium content">Total records: <b>{totalrecords} </b> Page <b>{currentpage}</b> of
+                <b> {totalpages}</b></p>
+<!--        </lightning-layout-item>-->
+<!--    </lightning-layout>-->
+</template>

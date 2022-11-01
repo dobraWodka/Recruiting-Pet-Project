@@ -1,0 +1,64 @@
+<!--
+ - Created by yurii.bubis on 10/26/2022.
+ -->
+
+<!-- Modal -->
+<template>
+    <template if:true={showModal}>
+        <section
+                role="dialog"
+                tabindex="-1"
+                aria-labelledby="modal-heading-01"
+                aria-modal="true"
+                aria-describedby="modal-content-id-1"
+                class="slds-modal slds-fade-in-open"
+        >
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <lightning-button-icon
+                            class="slds-modal__close"
+                            title="Close"
+                            icon-name="utility:close"
+                            icon-class="slds-button_icon-inverse"
+                            onclick={handleModalClose}
+                    ></lightning-button-icon>
+                    <h2>Enter your personal information</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium"
+                     id="modal-content-id-1"
+                >
+                    <lightning-record-edit-form object-api-name="Candidate__c"
+                                                onsubmit={handleSubmit}
+                                                onsuccess={handleSuccess}>
+                        <lightning-input-field field-name="Name" required></lightning-input-field>
+                        <lightning-input-field field-name="Age__c"></lightning-input-field>
+                        <lightning-input-field field-name="Email__c" required></lightning-input-field>
+                        <lightning-input-field field-name="Phone__c"></lightning-input-field>
+                        <lightning-input type="file" label="Attach your photo"
+                                         accept="image/png, image/jpeg"
+                                         onchange={handleFilesChange} required
+                        ></lightning-input>
+<!--                        <lightning-button label="Show Image JSON" onclick={handleSave}-->
+<!--                        ></lightning-button>-->
+                        <lightning-layout horizontal-align=center >
+                            <lightning-button class=slds-m-around_small
+                                              label="Cancel"
+                                              variant="destructive-text"
+                                              onclick={handleModalClose}>
+                            </lightning-button>
+                            <lightning-button class=slds-m-around_small
+                                              label="Reset" type="reset">
+                            </lightning-button>
+                            <lightning-button class=slds-m-around_small
+                                              variant="brand"
+                                              type="submit"
+                                              label="Submit Application">
+                            </lightning-button>
+                        </lightning-layout>
+                    </lightning-record-edit-form>
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>

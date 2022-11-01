@@ -1,0 +1,29 @@
+<!--
+ - Created by yurii.bubis on 10/27/2022.
+ -->
+
+<!-- Paginator Bottom -->
+<template>
+    <lightning-layout vertical-align="center">
+        <lightning-layout-item>
+            <lightning-button label="First" icon-name="utility:chevronleft" onclick={handleFirst}
+                              disabled={showFirstButton}></lightning-button>
+        </lightning-layout-item>
+        <lightning-layout-item>
+            <lightning-button label="Previous" icon-name="utility:chevronleft" onclick={handlePrevious}
+                              disabled={showFirstButton} class="slds-m-horizontal_small"></lightning-button>
+        </lightning-layout-item>
+        <lightning-layout-item flexibility="auto">
+            <p class="content">Total records: <b>{totalrecords} </b> Page <b>{currentpage}</b> of
+                <b> {totalPages}</b></p>
+        </lightning-layout-item>
+        <lightning-layout-item>
+            <lightning-button label="Next" icon-name="utility:chevronright" icon-position="right" onclick={handleNext}
+                              disabled={showLastButton} class="slds-m-horizontal_small"></lightning-button>
+        </lightning-layout-item>
+        <lightning-layout-item>
+            <lightning-button label="Last" icon-name="utility:chevronright" icon-position="right" onclick={handleLast}
+                              disabled={showLastButton}></lightning-button>
+        </lightning-layout-item>
+    </lightning-layout>
+</template>

@@ -1,0 +1,63 @@
+<!--
+ - Created by yurii.bubis on 10/27/2022.
+ -->
+
+<!-- Harness App -->
+<template>
+    <lightning-card title="Job Application Interface">
+        <div class="slds-p-horizontal_large">
+    <!--        <c-search-bar onsearchchange={handleSearchChange} pagesize={pagesize}-->
+    <!--                      currentpage={page} onrecordsload={handleRe}-->
+    <!--        ></c-search-bar>-->
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_1-of-2">
+                    <c-paginator-parent currentpage={page}
+                                        onrecordsload={handleRecordsLoad}
+                                        search-key={searchKey}
+                                        onapply={handleApply}
+                                        pagesize={pagesize}></c-paginator-parent>
+                    <div class="slds-m-around_medium">
+                        <c-paginator-bottom onprevious={handlePrevious} onnext={handleNext} onfirst={handleFirst}
+                                            onlast={handleLast} currentpage={page} totalrecords={totalrecords} pagesize={pagesize}>
+                        </c-paginator-bottom>
+                    </div>
+                </div>
+                <div class="slds-col slds-size_1-of-2">
+                    <lightning-card title="Selected Positions">
+                        <template for:each={selectedPositions} for:item="position">
+    <!--                        <p key={position.Id}>{position.Name}</p>-->
+    <!--                        <lightning-card title={position.Name} key={position.Id} class="slds-card_boundary">-->
+    <!--                            <lightning-button-icon icon-name="utility:clear" slot="actions"></lightning-button-icon>-->
+    <!--                            <p>here will be proper list</p>-->
+    <!--                        </lightning-card>-->
+                            <div class="slds-grid slds-gutters slds-grid_align-spread
+                             slds-p-vertical_small slds-m-vertical_x-small slds-box_border"
+                                 key={position.Id}
+                            >
+                                <div class="slds-col">
+                                    <h1 style="font-size: 1.2rem">{position.Name}</h1>
+                                </div>
+                                <div class="slds-col">
+                                    <lightning-button-icon icon-name="utility:clear"
+                                                           data-id={position.Id}
+                                                           onclick={removeSelectedPosition}
+                                                           variant="bare"
+                                    ></lightning-button-icon>
+                                </div>
+                            </div>
+                        </template>
+                        <template if:true={showSubmitButton}>
+                            <lightning-button label="Submit application for this positions"
+                                              onclick={submitApplication}
+                            ></lightning-button>
+                        </template>
+                        <c-modal show-modal={showModal}
+                                 onmodalclosed={handleModalClosed}
+                                 onrecordsuccess={handleRecordSuccess}
+                        ></c-modal>
+                    </lightning-card>
+                </div>
+            </div>
+        </div>
+    </lightning-card>
+</template>
