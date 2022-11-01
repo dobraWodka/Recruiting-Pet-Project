@@ -58,23 +58,50 @@ public with sharing class RecruitmentIntegration {
 
     }
 
+    @AuraEnabled
+    public static Candidate__c saveCandidate(String candidateJson, String imageJson) {
+        Candidate__c can =(Candidate__c) JSON.deserialize(candidateJson, Candidate__c.class);
+        System.debug(can);
+        Map<String, Object> imageMap = (Map<String, Object>) JSON.deserializeUntyped(imageJson);
+        Database.SaveResult result = Database.insert(can);
+//        String recordId = result.id;
+
+        System.debug(imageJson);
+        ContentVersion contentVersion = new ContentVersion();
+        contentVersion.VersionData = EncodingUtil.base64Decode(EncodingUtil.urlDecode(imageMap.get('base64').toString(), 'UTF-8')) ;
+        contentVersion.Title = imageMap.get('fileName').toString();
+        contentVersion.ContentLocation = 's';
+        contentVersion.PathOnClient = '.jpg';
+        contentVersion.FirstPublishLocationId = result.id;
+        insert contentVersion;
+        return can;
+
+
+    }
+
     @future(callout=true)
-    public static void sendCandidates(Id candidatesId) {
-        Candidate__c candidates = [
+    public static void sendCandidates(Set<Id> candidateIds) {
+        List<Candidate__c> candidates = [
                 SELECT
                         Name, Age__c, Email__c, Phone__c, Position_Name__c
                 FROM
                         Candidate__c
                 WHERE
-                        Id = :candidatesId
-                LIMIT 1
+                        Id
+                IN :candidateIds
         ];
-        String body  = '{"position": ' + JSON.serialize(candidates)
-                + ', "image": '+ getContentVersion(candidates.Id) + '}';
-        System.debug('positions count ' +  candidates);
+        List<String> body = new List<String>();
+        for (Candidate__c can : candidates) {
+            String candidateObj = '{"position": ' + JSON.serialize(can)
+                    + ', "image": '+ getContentVersion(can.Id) + '}';
+            body.add(candidateObj);
+        }
+//        String body  = '{"position": ' + JSON.serialize(candidates)
+//                + ', "image": '+ getContentVersion(candidates.Id) + '}';
+//        System.debug('positions count ' +  candidates);
 
         String accessToken = RecruitmentIntegration.ReturnAccessToken();
-
+        System.debug(JSON.serialize(body));
         if (accessToken != null) {
             System.debug('Access token provided');
             Http http = new Http();
@@ -83,7 +110,7 @@ public with sharing class RecruitmentIntegration {
             request.setHeader('Content-Type', 'application/json');
             request.setEndpoint('https://cunning-unicorn-luyqex-dev-ed.my.salesforce.com/services/apexrest/CompanyData');
             request.setMethod('POST');
-            request.setBody(body);
+            request.setBody(JSON.serialize(body));
 
             HttpResponse response = http.send(request);
 
