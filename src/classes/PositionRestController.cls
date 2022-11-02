@@ -20,7 +20,6 @@ global with sharing class PositionRestController {
         String requestBody = RestContext.request.requestBody.toString();
 
         List<String> bodyList = (List<String>) JSON.deserialize(requestBody, List<String>.class);
-        System.debug(bodyList);
 
         List<Candidate__c> candidatesToInsert = new List<Candidate__c>();
         Map<Id, List<Position__c>> candidatePostitionMap = new Map<Id, List<Position__c>>();
