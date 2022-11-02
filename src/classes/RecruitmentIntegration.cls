@@ -3,21 +3,24 @@
  */
 
 public with sharing class RecruitmentIntegration {
-    public static String returnAccessToken(){
+    public static String returnAccessToken() {
         Customer_Secret_Info__mdt customerInfo = [
                 SELECT
-                        MasterLabel, Consumer_Key__c, Consumer_Secret__c, Password__c
+                        MasterLabel, Consumer_Key__c, Consumer_Secret__c, Password__c, Endpoint__c, Username__c
                 FROM
-                        Customer_Secret_Info__mdt WHERE MasterLabel = 'Recruitment Integration' ];
+                        Customer_Secret_Info__mdt
+                WHERE MasterLabel = 'Recruitment Integration'
+        ];
+        if (customerInfo.Username__c == null) return null;
 
         String consumerKey = customerInfo.Consumer_Key__c;
         String consumerSecret = customerInfo.Consumer_Secret__c;
-        String endpoint = 'https://cunning-unicorn-luyqex-dev-ed.my.salesforce.com/services/oauth2/token';
-        String username = 'yurabybis@cunning-unicorn-luyqex.com';
+        String endpoint = customerInfo.Endpoint__c;
+        String username = customerInfo.Username__c;
         String password = customerInfo.Password__c;
         String reqBody =
                 'grant_type=password&client_id=' + consumerKey + '&client_secret='
-                        + consumerSecret + '&username=' + username + '&password='+ password;
+                        + consumerSecret + '&username=' + username + '&password=' + password;
 
         Http http = new Http();
         HttpRequest request = new HttpRequest();
@@ -33,110 +36,80 @@ public with sharing class RecruitmentIntegration {
 
         return deResp.access_token;
     }
-    @AuraEnabled(Cacheable=true)
-    public static List<Position__c> getPositionsList(Integer pagenumber, Integer numberOfRecords, Integer pageSize, String searchString) {
-        String searchKey = '%' + searchString + '%';
-
-        String query = 'select  Name, Salary__c, Description__c, Required_Skills__c, Responsibilities__c from Position__c ';
-        if (searchString != null && searchString != '') {
-            query += 'where Name like \'%' + searchString + '%\' ';
-        }
-        query += ' limit ' + pageSize + ' offset ' + (pageSize * (pagenumber - 1));
-        System.debug(query);
-        return Database.query(query);
-    }
-
-    @AuraEnabled(Cacheable=true)
-    public static Integer getPositionsCount(String searchString){
-        System.debug('Count method ' + searchString);
-        String query = 'select count() from Position__c ';
-        if (searchString != null && searchString != '') {
-            query += 'where Name like \'%' + searchString + '%\'';
-        }
-        System.debug(query);
-        return Database.countQuery(query);
-
-    }
-
-    @AuraEnabled
-    public static Candidate__c saveCandidate(String candidateJson, String imageJson) {
-        Candidate__c can =(Candidate__c) JSON.deserialize(candidateJson, Candidate__c.class);
-        System.debug(can);
-        Map<String, Object> imageMap = (Map<String, Object>) JSON.deserializeUntyped(imageJson);
-        Database.SaveResult result = Database.insert(can);
-//        String recordId = result.id;
-
-        System.debug(imageJson);
-        ContentVersion contentVersion = new ContentVersion();
-        contentVersion.VersionData = EncodingUtil.base64Decode(EncodingUtil.urlDecode(imageMap.get('base64').toString(), 'UTF-8')) ;
-        contentVersion.Title = imageMap.get('fileName').toString();
-        contentVersion.ContentLocation = 's';
-        contentVersion.PathOnClient = '.jpg';
-        contentVersion.FirstPublishLocationId = result.id;
-        insert contentVersion;
-        return can;
-
-
-    }
 
     @future(callout=true)
     public static void sendCandidates(Set<Id> candidateIds) {
         List<Candidate__c> candidates = [
                 SELECT
-                        Name, Age__c, Email__c, Phone__c, Position_Name__c
+                        Name, Age__c, Email__c, Phone__c, Position_Name__c,
+                        (SELECT Id, Position__c, Candidate__c, Position__r.Recruitment_Id__c
+                        FROM Position_Candidates__r)
                 FROM
                         Candidate__c
                 WHERE
                         Id
                 IN :candidateIds
         ];
+//
         List<String> body = new List<String>();
         for (Candidate__c can : candidates) {
-            String candidateObj = '{"position": ' + JSON.serialize(can)
-                    + ', "image": '+ getContentVersion(can.Id) + '}';
+            String candidateObj = '{"candidate": ' + JSON.serialize(can)
+                    + ', "image": ' + getContentVersion(can.Id) +
+                    ', "positions": ' + returnPositionsIds(can.Position_Candidates__r) + ' }';
             body.add(candidateObj);
         }
-//        String body  = '{"position": ' + JSON.serialize(candidates)
-//                + ', "image": '+ getContentVersion(candidates.Id) + '}';
-//        System.debug('positions count ' +  candidates);
 
         String accessToken = RecruitmentIntegration.ReturnAccessToken();
-        System.debug(JSON.serialize(body));
         if (accessToken != null) {
-            System.debug('Access token provided');
             Http http = new Http();
             HttpRequest request = new HttpRequest();
-            request.setHeader('Authorization','Bearer ' + accessToken);
+            request.setHeader('Authorization', 'Bearer ' + accessToken);
             request.setHeader('Content-Type', 'application/json');
             request.setEndpoint('https://cunning-unicorn-luyqex-dev-ed.my.salesforce.com/services/apexrest/CompanyData');
             request.setMethod('POST');
             request.setBody(JSON.serialize(body));
 
-            HttpResponse response = http.send(request);
-
-            System.debug(response.getBody());
+            try {
+                HttpResponse response = http.send(request);
+                System.debug(response.getBody());
+            } catch (Exception e) {
+                System.debug('Error occured' + e);
+            }
         }
     }
 
+    public static String returnPositionsIds(List<Position_Candidate__c> positionCandidates) {
+        Set<Id> positionIds = new Set<Id>();
+        for (Position_Candidate__c posCan : positionCandidates) {
+            positionIds.add(posCan.Position__r.Recruitment_Id__c);
+        }
+        String positionIdsJson = JSON.serialize(positionIds);
+        return positionIdsJson;
+    }
+
     public static String getContentVersion(Id candidateId) {
-        ContentDocumentLink  a = [SELECT ContentDocumentId FROM ContentDocumentLink WHERE LinkedEntityId = :candidateId LIMIT 1];
+        ContentDocumentLink cdl = [SELECT ContentDocumentId FROM ContentDocumentLink WHERE LinkedEntityId = :candidateId LIMIT 1];
         ContentVersion contentVersion = [
                 SELECT
-                        Title, VersionData, FileExtension, FileType , PathOnClient, ContentLocation
+                        Title, VersionData, FileExtension, FileType, PathOnClient, ContentLocation
                 FROM
                         ContentVersion
                 WHERE
-                        ContentDocumentId = :a.ContentDocumentId
-                LIMIT 1];
+                        ContentDocumentId = :cdl.ContentDocumentId
+                LIMIT 1
+        ];
         Blob dataBlob = contentVersion.VersionData;
-        String body = '{"PathOnClient": "' + contentVersion.PathOnClient + '",'
-                + '"Title": "' + contentVersion.Title + '" , "VersionData": "'
-                + EncodingUtil.base64Encode(dataBlob) + '" }';
 
-//        String body = JSON.serialize(bodyJson);
-        System.debug(body);
+        if (contentVersion.Title != null && contentVersion.Title != '') {
 
-        return body;
+            String body = '{"PathOnClient": "' + contentVersion.PathOnClient + '",'
+                    + '"Title": "' + contentVersion.Title + '" , "VersionData": "'
+                    + EncodingUtil.base64Encode(dataBlob) + '" }';
+            return body;
+        } else {
+            return null;
+        }
+
     }
 
 
