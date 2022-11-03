@@ -1,0 +1,19 @@
+<!--
+ - Created by yurii.bubis on 11/3/2022.
+ -->
+
+<!-- Image Displayer -->
+<template>
+    <template if:false={image}>
+        <i class="slds-text-color_error">No image uploaded!</i>
+    </template>
+    <template if:true={image}>
+        <lightning-card title="Candidate Photo">
+            <div class="slds-p-horizontal_large">
+                <img src={image}
+                     style="width:100%; max-width: 360px; margin-left:auto; margin-right:auto; display: block"
+                >
+            </div>
+        </lightning-card>
+    </template>
+</template>
