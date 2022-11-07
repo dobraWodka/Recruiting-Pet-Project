@@ -4,16 +4,34 @@
 
 public with sharing class JobApplicationHelper {
     @AuraEnabled(Cacheable=true)
-    public static List<Position__c> getPositionsList(Integer pagenumber, Integer numberOfRecords, Integer pageSize, String searchString) {
-        String searchKey = '%' + searchString + '%';
+    public static List<Position__c> getPositionsList(Integer pagenumber,
+            Integer numberOfRecords, Integer pageSize,
+            String searchString, Integer salary, String maxPostedDate) {
+        String searchKey = '';
+        if (searchString != null) searchKey = searchString;
+        String query = 'select  Name, Salary__c, Description__c, Required_Skills__c, Responsibilities__c' +
+                ' from Position__c where Name like \'%' + searchKey + '%\'';
 
-        String query = 'select  Name, Salary__c, Description__c, Required_Skills__c, Responsibilities__c from Position__c ';
-        if (searchString != null && searchString != '') {
-            query += 'where Name like \'%' + searchString + '%\' ';
+//        if (searchString != null && searchString != '') {
+//            query += 'where Name like \'%' + searchString + '%\' ';
+//        }
+        if (salary != null && salary != 0) {
+            System.debug(salary);
+            query += ' and Salary__c >= ' + salary;
+        }
+        if (maxPostedDate != null) {
+            query += ' and CreatedDate > ' + maxPostedDate;
         }
         query += ' limit ' + pageSize + ' offset ' + (pageSize * (pagenumber - 1));
-        System.debug(query);
-        return Database.query(query);
+
+        try {
+            List<Position__c> positions = Database.query(query);
+            System.debug(positions);
+            return positions;
+        } catch (Exception e) {
+            System.debug(e);
+        }
+        return null;
     }
 
     @AuraEnabled(Cacheable=true)
@@ -36,6 +54,7 @@ public with sharing class JobApplicationHelper {
 
         return 'Alles gut!';
     }
+
 
     private static Id saveCandidate(String candidateJson) {
         Candidate__c can = (Candidate__c) JSON.deserialize(candidateJson, Candidate__c.class);

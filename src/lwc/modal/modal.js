@@ -4,13 +4,14 @@
 
 import {api, LightningElement, track} from 'lwc';
 import {ShowToastEvent} from "lightning/platformShowToastEvent";
-import saveCandidate from '@salesforce/apex/RecruitmentIntegration.saveCandidate';
+import processApplication from '@salesforce/apex/JobApplicationHelper.processApplication';
 
 
 const CSS_CLASS = 'modal-hidden';
 
 export default class Modal extends LightningElement {
     @api showModal;
+    @api selectedPositionsIds;
     candidate;
     savedRecordId;
     fileUplodaed;
@@ -22,8 +23,8 @@ export default class Modal extends LightningElement {
     fileName;
     candidateJson;
     imageJson;
+    selectedPositionsJson;
     fileToStringify;
-
 
     @api show() {
         this.showModal = true;
@@ -39,7 +40,7 @@ export default class Modal extends LightningElement {
         const fields = event.detail.fields;
         this.candidate = fields;
         this.candidateJson = JSON.stringify(this.candidate);
-
+        console.log(this.selectedPositionsIds);
         if (this.fileUplodaed) {
             console.log("image is provided");
             this.uploadHelper();
@@ -112,8 +113,11 @@ export default class Modal extends LightningElement {
                 "base64": encodeURIComponent(this.fileContents)
             };
             this.imageJson = JSON.stringify(this.fileToStringify);
-
-            saveCandidate({candidateJson: this.candidateJson, imageJson: this.imageJson})
+            this.selectedPositionsJson = JSON.stringify(this.selectedPositionsIds);
+            processApplication({candidateJson: this.candidateJson,
+                    imageJson: this.imageJson ,
+                    selectedPositionsIds: JSON.stringify(this.selectedPositionsIds)
+            })
                 .then((result) => {
                     this.dispatchEvent( new ShowToastEvent({
                         title: "Success",

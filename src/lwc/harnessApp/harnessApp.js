@@ -8,20 +8,25 @@
  */
 import {LightningElement, api, track} from 'lwc';
 import {ShowToastEvent} from "lightning/platformShowToastEvent";
-import getPositionsList from '@salesforce/apex/RecruitmentIntegration.getPositionsList';
-import getPositionsCount from '@salesforce/apex/RecruitmentIntegration.getPositionsCount';
 
 const PAGE_SIZE = 5;
 export default class HarnessApp extends LightningElement {
-    @track page = 1;
-    @api totalrecords;
+    @api page = 1
+    totalrecords;
     @api _pagesize = PAGE_SIZE;
     @track selectedPositions = [];
+    @track selectedPositionsIds = [];
     showModal;
+    searchExecuted;
     // searchKey;
     // minSalary;
     // maxPostedDate;
     // @track allPositions = [];
+
+
+    renderedCallback() {
+        // console.log("Selected Position Ids in HarnessApp", JSON.stringify(this.selectedPositionsIds));
+    }
 
     get pagesize() {
         return this._pagesize;
@@ -41,7 +46,6 @@ export default class HarnessApp extends LightningElement {
         if (this.page < this.totalPages) {
             this.page = this.page + 1;
         }
-        console.log("next button pressed and value is ", this.page);
     }
     handleFirst() {
         this.page = 1;
@@ -50,40 +54,47 @@ export default class HarnessApp extends LightningElement {
         this.page = this.totalPages;
     }
     handleRecordsLoad(event) {
-        console.log("total records ", event.detail);
-        this.totalrecords = event.detail;
+        this.totalrecords = event.detail.totalrecords;
         this.totalPages = Math.ceil(this.totalrecords / this.pagesize);
+        this.searchExecuted = false;
     }
     handlePageChange(event) {
         this.page = event.detail;
     }
     handleApply(event) {
-        l
         const position = event.detail;
-        if (!this.selectedPositions.includes(position)) {
-            this.selectedPositions = [...this.selectedPositions, event.detail];
+        // console.log("position that comes from selectedPosition" , position);
+
+        if (!this.selectedPositionsIds.includes(position.Id)) {
+            console.log(`List ${this.selectedPositionsIds} NOT includes this position ${position.Id}`);
+            this.selectedPositions = [...this.selectedPositions, position];
+            this.selectedPositionsIds = [...this.selectedPositionsIds, position.Id];
         } else {
-            this.dispatchEvent( new ShowToastEvent({
-                title: "Error",
-                message: "This position already in the list!",
-                variant: "warning"
-            }));
+            console.log(`List ${this.selectedPositionsIds} includes this position ${position.Id}`);
+            this.selectedPositions = this.selectedPositions.filter(item => item !== position);
+            this.selectedPositionsIds = this.selectedPositionsIds.filter(item => item !== position.Id);
+
+            // this.dispatchEvent( new ShowToastEvent({
+            //     title: "Error",
+            //     message: "This position already in the list!",
+            //     variant: "warning"
+            // }));
         }
     }
     handleSearchChange(event) {
-        console.log("Search in harnessApp", JSON.parse(JSON.stringify(event.detail)));
         this.searchKey = event.detail.searchKey;
         this.minSalary = event.detail.minSalary;
         this.maxPostedDate = event.detail.maxPostedDate;
     }
     removeSelectedPosition(event) {
-        const positionId = event.target.dataset.id;
+        const positionId = event.detail;
         this.selectedPositions = this.selectedPositions.filter(position => position.Id !== positionId);
+        this.selectedPositionsIds = this.selectedPositionsIds.filter(position => position !== positionId);
+        console.log(`List ${this.selectedPositionsIds} includes this position ${positionId}`);
+        console.log("selectedPositions", this.selectedPositions);
+
+
     }
-    submitApplication() {
-        this.showModal = true;
-    }
-    handleModalClosed() {
-        this.selectedPositions = [];
-    }
+
+
 }
