@@ -9,39 +9,46 @@ export default class JobPositionTile extends LightningElement {
     @api position
     @api showDetails;
     @api detailIsExpanded;
-    selectedPositionList;
-    detailWillRemain;
+    @api selectedPositionsList;
+    buttonLabel;
+    buttonVariant;
     utilityRecordFields = ["Id", "Salary__c", "Name"];
 
+    renderedCallback() {
+        console.log("selected positions in Tile", JSON.stringify(this.selectedPositionsList));
+        if (this.selectedPositionsList.includes(this.position)) {
+          this.buttonLabel = "Remove";
+          this.buttonVariant = "destructive";
+        } else {
+            this.buttonLabel = "Add";
+            this.buttonVariant = "brand";
+        }
+    }
 
     selectedPositionHandler(event) {
         event.preventDefault();
         this.showDetails === true ? this.showDetails = false : this.showDetails = true;
-        console.log("show details after event", this.showDetails);
-        this.selectedPositionList = [];
-        // const selectedPositionId = event.detail.Id;
-        // this.selectedPosition = this.allPositions.find(position => position.Id === selectedPositionId);
-        Object.keys(this.position).forEach(positionKey => {
-            if (!this.utilityRecordFields.includes(positionKey)) {
-            const cleanKey = positionKey.replace(/(__c|_)/g, " ") + ":";
-            const newObj = {
-                "key": cleanKey,
-                "value": this.position[positionKey]
-            }
-            this.selectedPositionList.push(newObj);
-            // console.log("selectedPostionList size is ", this.selectedPositionList.length);
-            }
-        });
+        // this.selectedPositionsList = [];
 
-        const selectedEvent = new CustomEvent("selectedposition", {
-            detail: {
-                Id: this.position.Id,
-            }
-        });
-        this.dispatchEvent(selectedEvent);
+        // Object.keys(this.position).forEach(positionKey => {
+        //     if (!this.utilityRecordFields.includes(positionKey)) {
+        //     const cleanKey = positionKey.replace(/(__c|_)/g, " ") + ":";
+        //     const newObj = {
+        //         "key": cleanKey,
+        //         "value": this.position[positionKey]
+        //     }
+        //     this.selectedPositionsList.push(newObj);
+        //     }
+        // });
+        //
+        // const selectedEvent = new CustomEvent("selectedposition", {
+        //     detail: this.position.Id,
+        //
+        // });
+        // this.dispatchEvent(selectedEvent);
     }
     addPositionToSelected() {
-        this.dispatchEvent(new CustomEvent('apply', {
+        this.dispatchEvent(new CustomEvent('addtoselected', {
             detail: this.position
         }));
 
