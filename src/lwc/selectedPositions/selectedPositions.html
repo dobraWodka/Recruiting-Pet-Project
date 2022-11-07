@@ -1,0 +1,38 @@
+<!--
+ - Created by yurii.bubis on 11/4/2022.
+ -->
+
+<!-- Selected Positions -->
+<template>
+    <lightning-card title="Selected Positions">
+<!--        <lightning-button label="Send Event" onclick={sendPubSubEvent}></lightning-button>-->
+        <template if:true={showSubmitButton}>
+            <lightning-button label="Submit application for this positions"
+                              variant="brand"
+                              slot="actions"
+                              onclick={submitApplication}
+            ></lightning-button>
+        </template>
+        <template for:each={selectedPositions} for:item="position">
+            <div class="slds-grid slds-gutters slds-grid_align-spread
+                             slds-p-vertical_small slds-m-around_x-small slds-box_border"
+                 key={position.Id}
+            >
+                <div class="slds-col">
+                    <h1 style="font-size: 1rem; font-weight: 500">{position.Name}</h1></div>
+                <div class="slds-col">
+                    <lightning-button-icon icon-name="utility:clear"
+                                           data-id={position.Id}
+                                           onclick={sendPubSubEvent}
+                                           variant="bare"
+                    ></lightning-button-icon>
+                </div>
+            </div>
+        </template>
+        <c-modal show-modal={showModal}
+                 selected-positions-ids={selectedPositionsIds}
+                 onmodalclosed={handleModalClosed}
+                 onrecordsuccess={handleRecordSuccess}
+        ></c-modal>
+    </lightning-card>
+</template>

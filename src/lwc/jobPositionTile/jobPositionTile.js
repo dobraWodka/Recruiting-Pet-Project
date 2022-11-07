@@ -24,22 +24,15 @@ export default class JobPositionTile extends LightningElement {
             this.buttonLabel = "Add";
             this.buttonVariant = "brand";
         }
-        // console.log("this.Position in rendered Callback", this.position);
     }
 
     selectedPositionHandler(event) {
         event.preventDefault();
         this.showDetails === true ? this.showDetails = false : this.showDetails = true;
-        // this.showDetails = true;
         this.positionDetails = [];
 
         this.createPositionDetails(this.position);
 
-        // const selectedEvent = new CustomEvent("selectedposition", {
-        //     detail: this.position.Id,
-        //
-        // });
-        // this.dispatchEvent(selectedEvent);
     }
     addPositionToSelected() {
         this.dispatchEvent(new CustomEvent('addtoselected', {
@@ -48,8 +41,6 @@ export default class JobPositionTile extends LightningElement {
 
     }
     createPositionDetails(thisPosition) {
-        // console.log("thisPosition in createPositionDetails", thisPosition);
-
         Object.keys(thisPosition).forEach(positionKey => {
             if (!this.utilityRecordFields.includes(positionKey)) {
                 const cleanKey = positionKey.replace(/(__c|_)/g, " ") + ":";

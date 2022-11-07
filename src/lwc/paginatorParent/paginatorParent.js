@@ -26,8 +26,6 @@ export default class PaginatorParent extends LightningElement {
     today;
     @track showAll = false;
     selectedPositions = [];
-    selectedPositionsIds = [];
-    details;
     @wire(CurrentPageReference) pageRef;
 
     handleSearchChange(event) {
@@ -49,12 +47,7 @@ export default class PaginatorParent extends LightningElement {
     disconnectedCallback() {
         unregisterAllListeners(this);
     }
-    // sutUpDetails(pubSubEvent){
-    //     const positionToRemove = pubSubEvent;
-    //     this.selectedPositions = this.selectedPositions.filter(position => position !== positionToRemove);
-    //     // this.selectedPositionsIds = this.selectedPositionsIds.filter(position => position !== positionToRemove.Id);
 
-    // }
     sendSelected() {
         fireEvent(this.pageRef, "addposition", this.selectedPositions);
 
@@ -63,19 +56,13 @@ export default class PaginatorParent extends LightningElement {
         const position = event.detail;
         if (!this.selectedPositions.includes(position)) {
             this.selectedPositions = [...this.selectedPositions, position];
-            // this.selectedPositionsIds = [...this.selectedPositionsIds, position.Id];
-            // console.log("Selected Postiton List in paginatorParent" , JSON.stringify(this.selectedPositions));
         } else {
-            // console.log(`List ${this.selectedPositionsIds} includes this position ${position.Id}`);
             this.selectedPositions = this.selectedPositions.filter(item => item !== position);
-            // this.selectedPositionsIds = this.selectedPositionsIds.filter(item => item !== position.Id);
         }
         this.sendSelected();
     }
 
     renderedCallback() {
-        // console.log("selectedPositionIds in Parent is changed and now ", JSON.stringify(this.selectedPositionsIds));
-
         if (this.isSearchChangeExecuted && (this.localCurrentPage === this.currentpage)) return
 
         this.isSearchChangeExecuted = true;
@@ -91,18 +78,7 @@ export default class PaginatorParent extends LightningElement {
     }
 
     handleSelectedPosition(event) {
-        // this.showDetails === true ? this.showDetails = false : this.showDetails = true;
-        // console.log("showAll in parent", this.showAll);
         this.showAll = false;
-        // console.log("showAll in parent", this.showAll);
-
-    }
-
-    handleApply(event) {
-        const position = event.detail;
-        this.dispatchEvent(new CustomEvent("apply", {
-            detail: position
-        }));
     }
 
     getCount() {
