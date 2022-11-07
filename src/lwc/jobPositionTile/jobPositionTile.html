@@ -23,7 +23,7 @@
                     </lightning-layout>
                     <template if:true={showDetails}>
                         <div class="info slds-p-horizontal_medium slds-m-vertical_x-small">
-                            <template for:each={selectedPositionList} for:item="position">
+                            <template for:each={positionDetails} for:item="position">
                                 <div class="slds-grid slds-gutters column" key={position.key}>
                                     <div class="slds-col column slds-size_3-of-12 slds-m-vertical_x-small">
                                         <p>{position.key}</p>

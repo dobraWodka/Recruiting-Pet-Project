@@ -38,7 +38,7 @@ export default class PaginatorParent extends LightningElement {
         }
     }
     connectedCallback() {
-        registerListener("removeposition", this.sutUpDetails, this);
+        registerListener("removeposition", this.handleAddSelected, this);
 
         let rightNow = new Date();
         rightNow.setMinutes(
@@ -49,36 +49,32 @@ export default class PaginatorParent extends LightningElement {
     disconnectedCallback() {
         unregisterAllListeners(this);
     }
-    sutUpDetails(pubSubEvent){
-        const positionToRemove = pubSubEvent;
-        console.log("details recieved from PubSub", positionToRemove);
-        console.log("selectedPositionIds", this.selectedPositionsIds);
-        this.selectedPositions = this.selectedPositions.filter(position => position !== positionToRemove);
-        this.selectedPositionsIds = this.selectedPositionsIds.filter(position => position !== positionToRemove.Id);
-        console.log("selectedPositionIds after ", this.selectedPositionsIds);
+    // sutUpDetails(pubSubEvent){
+    //     const positionToRemove = pubSubEvent;
+    //     this.selectedPositions = this.selectedPositions.filter(position => position !== positionToRemove);
+    //     // this.selectedPositionsIds = this.selectedPositionsIds.filter(position => position !== positionToRemove.Id);
 
-    }
+    // }
     sendSelected() {
         fireEvent(this.pageRef, "addposition", this.selectedPositions);
 
     }
     handleAddSelected(event) {
         const position = event.detail;
-        if (!this.selectedPositionsIds.includes(position.Id)) {
-            console.log(`List ${this.selectedPositionsIds} NOT includes this position ${position.Id}`);
+        if (!this.selectedPositions.includes(position)) {
             this.selectedPositions = [...this.selectedPositions, position];
-            this.selectedPositionsIds = [...this.selectedPositionsIds, position.Id];
-            console.log("Selected Postiton List in paginatorParent" , JSON.stringify(this.selectedPositions));
+            // this.selectedPositionsIds = [...this.selectedPositionsIds, position.Id];
+            // console.log("Selected Postiton List in paginatorParent" , JSON.stringify(this.selectedPositions));
         } else {
-            console.log(`List ${this.selectedPositionsIds} includes this position ${position.Id}`);
+            // console.log(`List ${this.selectedPositionsIds} includes this position ${position.Id}`);
             this.selectedPositions = this.selectedPositions.filter(item => item !== position);
-            this.selectedPositionsIds = this.selectedPositionsIds.filter(item => item !== position.Id);
+            // this.selectedPositionsIds = this.selectedPositionsIds.filter(item => item !== position.Id);
         }
         this.sendSelected();
     }
 
     renderedCallback() {
-        console.log("selectedPositionIds in Parent is changed and now ", JSON.stringify(this.selectedPositionsIds));
+        // console.log("selectedPositionIds in Parent is changed and now ", JSON.stringify(this.selectedPositionsIds));
 
         if (this.isSearchChangeExecuted && (this.localCurrentPage === this.currentpage)) return
 
