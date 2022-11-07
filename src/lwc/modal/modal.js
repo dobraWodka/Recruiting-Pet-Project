@@ -12,6 +12,7 @@ const CSS_CLASS = 'modal-hidden';
 export default class Modal extends LightningElement {
     @api showModal;
     @api selectedPositions;
+    selectedPositionsIds = [];
     candidate;
     savedRecordId;
     fileUplodaed;
@@ -34,6 +35,9 @@ export default class Modal extends LightningElement {
         this.showModal = false;
         this.dispatchEvent(new CustomEvent('modalclosed'));
     }
+    renderedCallback() {
+        this.selectedPositionsIds = this.selectedPositions.map(position => position.Id);
+    }
 
     handleSubmit(event) {
         event.preventDefault();
@@ -41,6 +45,7 @@ export default class Modal extends LightningElement {
         this.candidate = fields;
         this.candidateJson = JSON.stringify(this.candidate);
         console.log(this.selectedPositionsIds);
+
         if (this.fileUplodaed) {
             console.log("image is provided");
             this.uploadHelper();

@@ -11,17 +11,22 @@
                              onchange={handleSearchChange} value={searchKey}
             ></lightning-input>
         </lightning-layout-item>
-        <lightning-layout-item size="3" >
+        <lightning-layout-item size="2" >
+            <lightning-input type="date" name="input-date"
+                             label="Newer or equal than this date"
+                             max={today} onchange={handleDateChange}
+            ></lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item size="2" >
             <lightning-slider
                     label="Minimal Salary" step="100" value="100"
                     onchange={handleSliderChange} min="0" max="10000"
             ></lightning-slider>
         </lightning-layout-item>
-        <lightning-layout-item size="2">
-            <lightning-input type="date" name="input-date"
-                             label="Newer or equal than this date"
-                             max={today} onchange={handleDateChange}
-            ></lightning-input>
+        <lightning-layout-item size="1">
+            <lightning-combobox label="Page size" value="5"
+                                options={comboboxOptions} onchange={handleComboboxChange}
+            ></lightning-combobox>
         </lightning-layout-item>
     </lightning-layout>
 </template>

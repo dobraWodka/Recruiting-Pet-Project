@@ -5,10 +5,8 @@
 import {LightningElement, api} from 'lwc';
 
 export default class JobPositionTile extends LightningElement {
-
     @api position
     @api showDetails;
-    @api detailIsExpanded;
     @api selectedPositionsList;
     positionDetails = [];
     buttonLabel;
@@ -16,12 +14,11 @@ export default class JobPositionTile extends LightningElement {
     utilityRecordFields = ["Id", "Salary__c", "Name"];
 
     renderedCallback() {
-        console.log("selected positions in Tile", JSON.stringify(this.selectedPositionsList));
         if (this.selectedPositionsList.includes(this.position)) {
-          this.buttonLabel = "Remove";
+          this.buttonLabel = "Remove from Selected Positions list";
           this.buttonVariant = "destructive";
         } else {
-            this.buttonLabel = "Add";
+            this.buttonLabel = "Add to Selected Positions list";
             this.buttonVariant = "brand";
         }
     }
@@ -32,13 +29,12 @@ export default class JobPositionTile extends LightningElement {
         this.positionDetails = [];
 
         this.createPositionDetails(this.position);
-
     }
+
     addPositionToSelected() {
         this.dispatchEvent(new CustomEvent('addtoselected', {
             detail: this.position
         }));
-
     }
     createPositionDetails(thisPosition) {
         Object.keys(thisPosition).forEach(positionKey => {

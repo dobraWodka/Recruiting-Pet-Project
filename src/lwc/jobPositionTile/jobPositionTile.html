@@ -22,7 +22,7 @@
                         </lightning-layout-item>
                     </lightning-layout>
                     <template if:true={showDetails}>
-                        <div class="info slds-p-horizontal_medium slds-m-vertical_x-small">
+                        <div class="info slds-p-horizontal_medium slds-m-vertical_x-small ">
                             <template for:each={positionDetails} for:item="position">
                                 <div class="slds-grid slds-gutters column" key={position.key}>
                                     <div class="slds-col column slds-size_3-of-12 slds-m-vertical_x-small">
@@ -34,7 +34,11 @@
                                 </div>
                             </template>
                             <lightning-button label={buttonLabel} variant={buttonVariant}
-                                              onclick={addPositionToSelected}></lightning-button>
+                                              onclick={addPositionToSelected}
+                                              class="slds-align_absolute-center"
+                            ></lightning-button>
+<!--                            <button class=-->
+<!--                                    onclick={addPositionToSelected}>{buttonLabel}</button>-->
                         </div>
                     </template>
                 </lightning-card>

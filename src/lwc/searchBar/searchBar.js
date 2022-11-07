@@ -6,30 +6,29 @@ import {api, LightningElement, wire, track} from 'lwc';
 import getPositionsList from '@salesforce/apex/JobApplicationHelper.getPositionsList';
 import getPositionsCount from '@salesforce/apex/JobApplicationHelper.getPositionsCount';
 import {CurrentPageReference} from "lightning/navigation";
-import {fireEvent, registerListener} from "c/pubsub";
+import {fireEvent, registerListener, unregisterAllListeners} from "c/pubsub";
 
 export default class SearchBar extends LightningElement {
     searchKey;
-    isSearchChangeExecuted
     maxPostedDate;
-    minSalaryValue;
+    minSalary;
     today;
-    maxSalaryValue = 1000;
-    startSalaryValue = 100;
-    @api pagesize;
-    @api currentpage;
-    // @api pagenumber;
+    pagesize = 5;
+    currentpage = 1;
     totalrecords;
     totalpages;
-    isSearchChangeExecuted = false;
-    localCurrentPage = null;
     @wire(CurrentPageReference) pageRef;
 
-
-    get minSalary() {
-        return this.minSalaryValue ?? this.startSalaryValue;
+    get comboboxOptions() {
+        return [
+            { label: '5', value: '5' },
+            { label: '6', value: '6' },
+            { label: '7', value: '7' },
+            { label: '8', value: '8' },
+            { label: '9', value: '9' },
+            { label: '10', value: '10' }
+        ];
     }
-
     connectedCallback() {
         registerListener("page", this.handlePage, this);
         let rightNow = new Date();
@@ -38,43 +37,56 @@ export default class SearchBar extends LightningElement {
         );
         this.today = rightNow.toISOString().slice(0,10);
         this.maxPostedDate = new Date("2000-01-01");
+        this.performSearch();
     }
+
     handlePage(event) {
-        console.log("currentpage in searchBar", event);
         this.currentpage = event;
-        this.getCount();
+        this.performSearch();
     }
-    renderedCallback() {
-        console.log("searchKey in searchBar", this.searchKey);
-
-        if (this.isSearchChangeExecuted && (this.localCurrentPage === this.currentpage)) {
-            return;
-        }
-        this.isSearchChangeExecuted = true;
-        this.localCurrentPage = this.currentpage;
-        console.log("executing apex methods");
-        this.getCount();
-
+    handleComboboxChange(event) {
+        this.pagesize = event.detail.value;
+        this.performSearch();
     }
-    getCount() {
-            getPositionsCount({searchString: this.searchKey})
-                .then(recordsCount => {
-                    this.totalrecords = recordsCount;
-                    if (recordsCount !== 0 && !isNaN(recordsCount)) {
-                        this.totalpages = Math.ceil(recordsCount / this.pagesize);
-                        this.getList();
-                    } else {
-                        this.allPositions = [];
-                        this.totalpages = 1;
-                        this.totalrecords = 0;
-                    }
-                    // this.dispatchRecordLoadEvent(recordsCount)
-                })
-                .catch(error => {
-                    this.error = error;
-                    this.totalrecords = undefined;
-                })
+
+    handleSearchChange(event) {
+        if (this.searchKey !== event.target.value) {
+            this.searchKey = event.target.value;
+            this.currentpage = 1;
+            this.performSearch(600);
         }
+    }
+    handleSliderChange(event) {
+        this.minSalary = event.detail.value;
+        this.performSearch(600);
+    }
+    handleDateChange(event) {
+        this.maxPostedDate = new Date(event.detail.value);
+        this.performSearch();
+    }
+    performSearch(delay = 0) {
+        setTimeout(() => {
+            this.getCount(this.searchKey);
+        }, delay);
+    }
+    getCount(searchString) {
+        getPositionsCount({searchString: searchString})
+            .then(recordsCount => {
+                this.totalrecords = recordsCount;
+                if (recordsCount !== 0 && !isNaN(recordsCount)) {
+                    this.totalpages = Math.ceil(recordsCount / this.pagesize);
+                    this.getList();
+                } else {
+                    this.allPositions = [];
+                    this.totalpages = 1;
+                    this.totalrecords = 0;
+                }
+            })
+            .catch(error => {
+                this.error = error;
+                this.totalrecords = undefined;
+            });
+    }
 
     getList() {
         getPositionsList({
@@ -85,14 +97,8 @@ export default class SearchBar extends LightningElement {
         })
             .then(positionList => {
                 this.allPositions = positionList;
-                // console.log("All Positions", this.allPositions);
                 this.error = undefined;
-                fireEvent(this.pageRef, "search", {
-                    allPositions: this.allPositions,
-                    recordsCount: this.totalrecords,
-                    currentPage: this.currentpage,
-                    pagesize: this.pagesize
-                });
+                this.fireSearchEvent();
                 this.currentpage = 1;
             })
             .catch(error => {
@@ -100,21 +106,17 @@ export default class SearchBar extends LightningElement {
                 this.allPositions = undefined;
             });
     }
-
-    handleSearchChange(event) {
-        if (this.searchKey !== event.target.value) {
-            this.isSearchChangeExecuted = false;
-            this.searchKey = event.target.value;
-            this.currentpage = 1;
-            // console.log("Current searchWord ", this.searchKey);
-        }
-
+    fireSearchEvent() {
+        fireEvent(this.pageRef, "search", {
+            allPositions: this.allPositions,
+            recordsCount: this.totalrecords,
+            currentPage: this.currentpage,
+            pagesize: this.pagesize
+        });
     }
-    handleSliderChange(event) {
-        this.minSalaryValue = event.detail.value;
-    }
-    handleDateChange(event) {
-        let newMaxPostedDate = new Date(event.detail.value);
-        this.maxPostedDate = newMaxPostedDate;
+
+
+    disconnectedCallback() {
+        unregisterAllListeners(this);
     }
 }
