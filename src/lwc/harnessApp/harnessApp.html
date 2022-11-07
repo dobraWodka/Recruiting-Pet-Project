@@ -6,6 +6,7 @@
 <template>
     <lightning-card title="Job Application Interface">
         <div class="slds-p-horizontal_large">
+            <c-search-bar pagesize={pagesize} currentpage={page}></c-search-bar>
             <div class="slds-grid slds-gutters">
                 <div class="slds-col slds-size_7-of-12">
                     <c-paginator-parent currentpage={page}
@@ -13,7 +14,7 @@
                                         pagesize={pagesize}></c-paginator-parent>
                     <div class="slds-m-around_small">
                         <c-paginator-bottom onprevious={handlePrevious} onnext={handleNext} onfirst={handleFirst}
-                                            onlast={handleLast} currentpage={page} totalrecords={totalrecords} pagesize={pagesize}>
+                                            onlast={handleLast}  pagesize={pagesize}>
                         </c-paginator-bottom>
                     </div>
                 </div>

@@ -4,34 +4,34 @@
 
 <!-- Paginator Parent -->
 <template>
-    <lightning-layout horizontal-align="spread">
-        <lightning-layout-item size="6">
-            <lightning-input type="search"
-                             name="enter-position-name"
-                             label="Search by position name"
-                             onchange={handleSearchChange}
-                             value={searchKey}
-            ></lightning-input>
-        </lightning-layout-item>
-        <lightning-layout-item size="3">
-            <lightning-slider
-                    label="Minimal Salary"
-                    step="100"
-                    value="100"
-                    onchange={handleSliderChange}
-                    min="0"
-                    max="10000"
-            ></lightning-slider>
-        </lightning-layout-item>
-        <lightning-layout-item size="2" >
-            <lightning-input type="date"
-                             name="input-date"
-                             label="Newer or equal than this date"
-                             max={today}
-                             onchange={handleDateChange}
-            ></lightning-input>
-        </lightning-layout-item>
-    </lightning-layout>
+<!--    <lightning-layout horizontal-align="spread">-->
+<!--        <lightning-layout-item size="6">-->
+<!--            <lightning-input type="search"-->
+<!--                             name="enter-position-name"-->
+<!--                             label="Search by position name"-->
+<!--                             onchange={handleSearchChange}-->
+<!--                             value={searchKey}-->
+<!--            ></lightning-input>-->
+<!--        </lightning-layout-item>-->
+<!--        <lightning-layout-item size="3">-->
+<!--            <lightning-slider-->
+<!--                    label="Minimal Salary"-->
+<!--                    step="100"-->
+<!--                    value="100"-->
+<!--                    onchange={handleSliderChange}-->
+<!--                    min="0"-->
+<!--                    max="10000"-->
+<!--            ></lightning-slider>-->
+<!--        </lightning-layout-item>-->
+<!--        <lightning-layout-item size="2" >-->
+<!--            <lightning-input type="date"-->
+<!--                             name="input-date"-->
+<!--                             label="Newer or equal than this date"-->
+<!--                             max={today}-->
+<!--                             onchange={handleDateChange}-->
+<!--            ></lightning-input>-->
+<!--        </lightning-layout-item>-->
+<!--    </lightning-layout>-->
             <template for:each={allPositions} for:item=position>
                 <c-job-position-tile
                         class="slds-m-vertical_small"

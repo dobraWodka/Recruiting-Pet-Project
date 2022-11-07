@@ -37,6 +37,8 @@ export default class PaginatorParent extends LightningElement {
     }
     connectedCallback() {
         registerListener("removeposition", this.handleAddSelected, this);
+        registerListener("search", this.handleSearch, this);
+
 
         let rightNow = new Date();
         rightNow.setMinutes(
@@ -46,6 +48,10 @@ export default class PaginatorParent extends LightningElement {
     }
     disconnectedCallback() {
         unregisterAllListeners(this);
+    }
+
+    handleSearch(event) {
+        this.allPositions = event.allPositions;
     }
 
     sendSelected() {
@@ -67,7 +73,7 @@ export default class PaginatorParent extends LightningElement {
 
         this.isSearchChangeExecuted = true;
         this.localCurrentPage = this.currentpage;
-        this.getCount();
+        // this.getCount();
     }
     handleSliderChange(event) {
         this.minSalary = event.detail.value;
@@ -81,43 +87,43 @@ export default class PaginatorParent extends LightningElement {
         this.showAll = false;
     }
 
-    getCount() {
-        getPositionsCount({searchString: this.searchKey})
-            .then(recordsCount => {
-                this.totalrecords = recordsCount;
-                if (recordsCount !== 0 && !isNaN(recordsCount)) {
-                    this.totalpages = Math.ceil(recordsCount / this.pagesize);
-                    this.getList();
-                } else {
-                    this.allPositions = [];
-                    this.totalpages = 1;
-                    this.totalrecords = 0;
-                }
-                this.dispatchRecordLoadEvent(recordsCount)
-            })
-            .catch(error => {
-                this.error = error;
-                this.totalrecords = undefined;
-            })
-    }
-
-    getList() {
-        getPositionsList({
-            pagenumber: this.currentpage, numberOfRecords: this.totalrecords,
-            pageSize: this.pagesize, searchString: this.searchKey,
-            salary: this.minSalary,
-            maxPostedDate: this.maxPostedDate
-        })
-            .then(positionList => {
-                this.allPositions = positionList;
-                console.log("All Positions", this.allPositions);
-                this.error = undefined;
-            })
-            .catch(error => {
-                this.error = error;
-                this.allPositions = undefined;
-            });
-    }
+    // getCount() {
+    //     getPositionsCount({searchString: this.searchKey})
+    //         .then(recordsCount => {
+    //             this.totalrecords = recordsCount;
+    //             if (recordsCount !== 0 && !isNaN(recordsCount)) {
+    //                 this.totalpages = Math.ceil(recordsCount / this.pagesize);
+    //                 this.getList();
+    //             } else {
+    //                 this.allPositions = [];
+    //                 this.totalpages = 1;
+    //                 this.totalrecords = 0;
+    //             }
+    //             this.dispatchRecordLoadEvent(recordsCount)
+    //         })
+    //         .catch(error => {
+    //             this.error = error;
+    //             this.totalrecords = undefined;
+    //         })
+    // }
+    //
+    // getList() {
+    //     getPositionsList({
+    //         pagenumber: this.currentpage, numberOfRecords: this.totalrecords,
+    //         pageSize: this.pagesize, searchString: this.searchKey,
+    //         salary: this.minSalary,
+    //         maxPostedDate: this.maxPostedDate
+    //     })
+    //         .then(positionList => {
+    //             this.allPositions = positionList;
+    //             console.log("All Positions", this.allPositions);
+    //             this.error = undefined;
+    //         })
+    //         .catch(error => {
+    //             this.error = error;
+    //             this.allPositions = undefined;
+    //         });
+    // }
     dispatchRecordLoadEvent(recordsCount) {
         const event = new CustomEvent('recordsload', {
             detail: {

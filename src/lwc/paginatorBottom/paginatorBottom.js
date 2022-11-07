@@ -2,15 +2,18 @@
  * Created by yurii.bubis on 10/27/2022.
  */
 
-import {LightningElement, api} from 'lwc';
+import {LightningElement, api, wire} from 'lwc';
+import {CurrentPageReference} from "lightning/navigation";
+import {fireEvent, registerListener, unregisterAllListeners} from "c/pubsub";
 
 export default class PaginatorBottom extends LightningElement {
     // Api considered as a reactive public property.
-    @api totalrecords;
-    @api currentpage;
-    @api pagesize;
+    pagesize;
     totalrecords;
     currentpage;
+    page = 1;
+
+    @wire(CurrentPageReference) pageRef;
 
     // Following are the private properties to a class.
     lastpage = false;
@@ -32,17 +35,43 @@ export default class PaginatorBottom extends LightningElement {
         }
         return false;
     }
+    connectedCallback() {
+        registerListener("search", this.handleSearch, this);
+    }
+    handleSearch(event) {
+        this.totalrecords = event.recordsCount;
+        this.currentpage = event.currentPage;
+        this.pagesize = event.pagesize;
+    }
     //Fire events based on the button actions
     handlePrevious() {
-        this.dispatchEvent(new CustomEvent('previous'));
+        // this.dispatchEvent(new CustomEvent('previous'));
+        if (this.page > 1) {
+            this.page = this.page - 1;
+        }
+        this.firePageEvent()
+        console.log("previous Event page", this.page);
     }
     handleNext() {
-        this.dispatchEvent(new CustomEvent('next'));
+        // this.dispatchEvent(new CustomEvent('next'));
+        if (this.page < this.totalPages) {
+            this.page = this.page + 1;
+        }
+        this.firePageEvent()
+        console.log("next Event page ", this.page);
     }
     handleFirst() {
-        this.dispatchEvent(new CustomEvent('first'));
+        // this.dispatchEvent(new CustomEvent('first'));
+        this.page = 1;
+        this.firePageEvent()
     }
     handleLast() {
-        this.dispatchEvent(new CustomEvent('last'));
+        // this.dispatchEvent(new CustomEvent('last'));
+        this.page = this.totalPages;
+        this.firePageEvent()
     }
+    firePageEvent() {
+        fireEvent(this.pageRef, "page", this.page);
+    }
+
 }

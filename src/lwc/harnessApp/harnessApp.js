@@ -11,21 +11,17 @@ import {ShowToastEvent} from "lightning/platformShowToastEvent";
 
 const PAGE_SIZE = 5;
 export default class HarnessApp extends LightningElement {
-    @api page = 1
+    @track page = 1
     totalrecords;
     @api _pagesize = PAGE_SIZE;
     @track selectedPositions = [];
-    @track selectedPositionsIds = [];
-    showModal;
     searchExecuted;
-    // searchKey;
-    // minSalary;
-    // maxPostedDate;
-    // @track allPositions = [];
+
 
 
     renderedCallback() {
         // console.log("Selected Position Ids in HarnessApp", JSON.stringify(this.selectedPositionsIds));
+        console.log("rendered Callback page ", this.page);
     }
 
     get pagesize() {
@@ -34,67 +30,38 @@ export default class HarnessApp extends LightningElement {
     set pagesize(value) {
         this._pagesize = value;
     }
-    get showSubmitButton() {
-        return this.selectedPositions.length > 0;
-    }
-    handlePrevious() {
-        if (this.page > 1) {
-            this.page = this.page - 1;
-        }
-    }
-    handleNext() {
-        if (this.page < this.totalPages) {
-            this.page = this.page + 1;
-        }
-    }
-    handleFirst() {
-        this.page = 1;
-    }
-    handleLast() {
-        this.page = this.totalPages;
-    }
-    handleRecordsLoad(event) {
-        this.totalrecords = event.detail.totalrecords;
-        this.totalPages = Math.ceil(this.totalrecords / this.pagesize);
-        this.searchExecuted = false;
-    }
-    // handlePageChange(event) {
-    //     this.page = event.detail;
+    // get showSubmitButton() {
+    //     return this.selectedPositions.length > 0;
     // }
-    // handleApply(event) {
-    //     const position = event.detail;
-    //     // console.log("position that comes from selectedPosition" , position);
-    //     //
-    //     // if (!this.selectedPositionsIds.includes(position.Id)) {
-    //     //     console.log(`List ${this.selectedPositionsIds} NOT includes this position ${position.Id}`);
-    //     //     this.selectedPositions = [...this.selectedPositions, position];
-    //     //     this.selectedPositionsIds = [...this.selectedPositionsIds, position.Id];
-    //     // } else {
-    //     //     console.log(`List ${this.selectedPositionsIds} includes this position ${position.Id}`);
-    //     //     this.selectedPositions = this.selectedPositions.filter(item => item !== position);
-    //     //     this.selectedPositionsIds = this.selectedPositionsIds.filter(item => item !== position.Id);
-    //
-    //         // this.dispatchEvent( new ShowToastEvent({
-    //         //     title: "Error",
-    //         //     message: "This position already in the list!",
-    //         //     variant: "warning"
-    //         // }));
+    // handlePrevious() {
+    //     if (this.page > 1) {
+    //         this.page = this.page - 1;
     //     }
+    //     console.log("previous Event page", this.page);
+    //
     // }
-    handleSearchChange(event) {
-        this.searchKey = event.detail.searchKey;
-        this.minSalary = event.detail.minSalary;
-        this.maxPostedDate = event.detail.maxPostedDate;
-    }
-    removeSelectedPosition(event) {
-        const positionId = event.detail;
-        this.selectedPositions = this.selectedPositions.filter(position => position.Id !== positionId);
-        this.selectedPositionsIds = this.selectedPositionsIds.filter(position => position !== positionId);
-        console.log(`List ${this.selectedPositionsIds} includes this position ${positionId}`);
-        console.log("selectedPositions", this.selectedPositions);
-
-
-    }
-
+    // handleNext() {
+    //     if (this.page < this.totalPages) {
+    //         this.page = this.page + 1;
+    //     }
+    //     console.log("next Event page ", this.page);
+    // }
+    // handleFirst() {
+    //     this.page = 1;
+    // }
+    // handleLast() {
+    //     this.page = this.totalPages;
+    // }
+    // handleRecordsLoad(event) {
+    //     this.totalrecords = event.detail.totalrecords;
+    //     this.totalPages = Math.ceil(this.totalrecords / this.pagesize);
+    //     this.searchExecuted = false;
+    // }
+    //
+    // handleSearchChange(event) {
+    //     this.searchKey = event.detail.searchKey;
+    //     this.minSalary = event.detail.minSalary;
+    //     this.maxPostedDate = event.detail.maxPostedDate;
+    // }
 
 }
