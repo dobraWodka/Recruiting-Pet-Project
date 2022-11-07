@@ -6,16 +6,10 @@
 <template>
     <lightning-card title="Job Application Interface">
         <div class="slds-p-horizontal_large">
-    <!--        <c-search-bar onsearchchange={handleSearchChange} pagesize={pagesize}-->
-    <!--                      currentpage={page} onrecordsload={handleRe}-->
-    <!--        ></c-search-bar>-->
             <div class="slds-grid slds-gutters">
-                <div class="slds-col slds-size_8-of-12">
+                <div class="slds-col slds-size_7-of-12">
                     <c-paginator-parent currentpage={page}
                                         onrecordsload={handleRecordsLoad}
-                                        search-key={searchKey}
-                                        selected-positions-ids={selectedPositionsIds}
-                                        onapply={handleApply}
                                         pagesize={pagesize}></c-paginator-parent>
                     <div class="slds-m-around_small">
                         <c-paginator-bottom onprevious={handlePrevious} onnext={handleNext} onfirst={handleFirst}
@@ -23,11 +17,8 @@
                         </c-paginator-bottom>
                     </div>
                 </div>
-                <div class="slds-col slds-size_4-of-12 left-border">
-                    <c-selected-positions selected-positions={selectedPositions}
-                                          selected-positions-ids={selectedPositionsIds}
-                                          onremoveselectedposition={removeSelectedPosition}
-                    ></c-selected-positions>
+                <div class="slds-col slds-size_5-of-12 left-border">
+                    <c-selected-positions></c-selected-positions>
                 </div>
             </div>
         </div>

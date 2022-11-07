@@ -11,7 +11,7 @@ const CSS_CLASS = 'modal-hidden';
 
 export default class Modal extends LightningElement {
     @api showModal;
-    @api selectedPositionsIds;
+    @api selectedPositions;
     candidate;
     savedRecordId;
     fileUplodaed;

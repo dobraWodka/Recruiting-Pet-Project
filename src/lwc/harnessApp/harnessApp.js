@@ -58,29 +58,29 @@ export default class HarnessApp extends LightningElement {
         this.totalPages = Math.ceil(this.totalrecords / this.pagesize);
         this.searchExecuted = false;
     }
-    handlePageChange(event) {
-        this.page = event.detail;
-    }
-    handleApply(event) {
-        const position = event.detail;
-        // console.log("position that comes from selectedPosition" , position);
-
-        if (!this.selectedPositionsIds.includes(position.Id)) {
-            console.log(`List ${this.selectedPositionsIds} NOT includes this position ${position.Id}`);
-            this.selectedPositions = [...this.selectedPositions, position];
-            this.selectedPositionsIds = [...this.selectedPositionsIds, position.Id];
-        } else {
-            console.log(`List ${this.selectedPositionsIds} includes this position ${position.Id}`);
-            this.selectedPositions = this.selectedPositions.filter(item => item !== position);
-            this.selectedPositionsIds = this.selectedPositionsIds.filter(item => item !== position.Id);
-
-            // this.dispatchEvent( new ShowToastEvent({
-            //     title: "Error",
-            //     message: "This position already in the list!",
-            //     variant: "warning"
-            // }));
-        }
-    }
+    // handlePageChange(event) {
+    //     this.page = event.detail;
+    // }
+    // handleApply(event) {
+    //     const position = event.detail;
+    //     // console.log("position that comes from selectedPosition" , position);
+    //     //
+    //     // if (!this.selectedPositionsIds.includes(position.Id)) {
+    //     //     console.log(`List ${this.selectedPositionsIds} NOT includes this position ${position.Id}`);
+    //     //     this.selectedPositions = [...this.selectedPositions, position];
+    //     //     this.selectedPositionsIds = [...this.selectedPositionsIds, position.Id];
+    //     // } else {
+    //     //     console.log(`List ${this.selectedPositionsIds} includes this position ${position.Id}`);
+    //     //     this.selectedPositions = this.selectedPositions.filter(item => item !== position);
+    //     //     this.selectedPositionsIds = this.selectedPositionsIds.filter(item => item !== position.Id);
+    //
+    //         // this.dispatchEvent( new ShowToastEvent({
+    //         //     title: "Error",
+    //         //     message: "This position already in the list!",
+    //         //     variant: "warning"
+    //         // }));
+    //     }
+    // }
     handleSearchChange(event) {
         this.searchKey = event.detail.searchKey;
         this.minSalary = event.detail.minSalary;
