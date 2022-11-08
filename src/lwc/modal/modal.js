@@ -15,6 +15,7 @@ export default class Modal extends LightningElement {
     candidateJson;
     imageJson;
     selectedPositionsJson;
+    succesfulCreation = false;
 
     @api show() {
         this.showModal = true;
@@ -22,8 +23,12 @@ export default class Modal extends LightningElement {
 
     @api hide() {
         this.showModal = false;
-        this.dispatchEvent(new CustomEvent('modalclosed'));
+        this.dispatchEvent(new CustomEvent('modalclosed', {detail: this.succesfulCreation}));
+        this.succesfulCreation = false;
+        this.fileUploaded = null;
+        this.fileName = null;
     }
+
     renderedCallback() {
         this.selectedPositionsIds = this.selectedPositions.map(position => position.Id);
     }
@@ -97,7 +102,8 @@ export default class Modal extends LightningElement {
                     message: "Job application created successfully!",
                     variant: "success"
                 }));
-                this.hide();
+                this.succesfulCreation = true;
+                this.hide(true);
             })
             .catch((error) => {
                 this.dispatchEvent( new ShowToastEvent({

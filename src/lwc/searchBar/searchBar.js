@@ -46,6 +46,7 @@ export default class SearchBar extends LightningElement {
     }
     handleComboboxChange(event) {
         this.pagesize = event.detail.value;
+        this.currentpage = 1;
         this.performSearch();
     }
 

@@ -45,7 +45,6 @@ public with sharing class JobApplicationHelper {
         if (maxPostedDate != null) {
             query += ' and CreatedDate > ' + maxPostedDate;
         }
-
         try {
             Integer count = Database.countQuery(query);
             System.debug(count);
@@ -65,7 +64,6 @@ public with sharing class JobApplicationHelper {
 
         return 'Alles gut!';
     }
-
 
     private static Id saveCandidate(String candidateJson) {
         Candidate__c can = (Candidate__c) JSON.deserialize(candidateJson, Candidate__c.class);

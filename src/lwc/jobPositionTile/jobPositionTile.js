@@ -14,7 +14,8 @@ export default class JobPositionTile extends LightningElement {
     utilityRecordFields = ["Id", "Salary__c", "Name"];
 
     renderedCallback() {
-        if (this.selectedPositionsList.includes(this.position)) {
+        let alreadySelected = this.selectedPositionsList.some(position => position.Id === this.position.Id);
+        if (alreadySelected) {
           this.buttonLabel = "Remove from Selected Positions list";
           this.buttonVariant = "destructive";
         } else {
