@@ -16,6 +16,8 @@ export default class PaginatorParent extends LightningElement {
     connectedCallback() {
         registerListener("removeposition", this.handleAddSelected, this);
         registerListener("search", this.handleSearch, this);
+        registerListener("clearallpositions", this.clearAllPositions, this);
+
 
     }
     disconnectedCallback() {
@@ -38,5 +40,8 @@ export default class PaginatorParent extends LightningElement {
             this.selectedPositions = this.selectedPositions.filter(item => item !== position);
         }
         this.sendSelected();
+    }
+    clearAllPositions() {
+        this.selectedPositions = [];
     }
 }

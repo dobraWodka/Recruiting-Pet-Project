@@ -12,9 +12,6 @@ public with sharing class JobApplicationHelper {
         String query = 'select  Name, Salary__c, Description__c, Required_Skills__c, Responsibilities__c' +
                 ' from Position__c where Name like \'%' + searchKey + '%\'';
 
-//        if (searchString != null && searchString != '') {
-//            query += 'where Name like \'%' + searchString + '%\' ';
-//        }
         if (salary != null && salary != 0) {
             System.debug(salary);
             query += ' and Salary__c >= ' + salary;
@@ -35,14 +32,28 @@ public with sharing class JobApplicationHelper {
     }
 
     @AuraEnabled(Cacheable=true)
-    public static Integer getPositionsCount(String searchString){
-        System.debug('Count method ' + searchString);
-        String query = 'select count() from Position__c ';
-        if (searchString != null && searchString != '') {
-            query += 'where Name like \'%' + searchString + '%\'';
+    public static Integer getPositionsCount(String searchString, Integer salary, String maxPostedDate){
+        String searchKey = '';
+        if (searchString != null) searchKey = searchString;
+        String query = 'select  COUNT()' +
+                ' from Position__c where Name like \'%' + searchKey + '%\'';
+
+        if (salary != null && salary != 0) {
+            System.debug(salary);
+            query += ' and Salary__c >= ' + salary;
         }
-        System.debug(query);
-        return Database.countQuery(query);
+        if (maxPostedDate != null) {
+            query += ' and CreatedDate > ' + maxPostedDate;
+        }
+
+        try {
+            Integer count = Database.countQuery(query);
+            System.debug(count);
+            return count;
+        } catch (Exception e) {
+            System.debug(e);
+        }
+        return null;
 
     }
 

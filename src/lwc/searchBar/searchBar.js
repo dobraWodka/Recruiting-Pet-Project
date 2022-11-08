@@ -58,19 +58,25 @@ export default class SearchBar extends LightningElement {
     }
     handleSliderChange(event) {
         this.minSalary = event.detail.value;
+        this.currentpage = 1;
         this.performSearch(600);
     }
     handleDateChange(event) {
         this.maxPostedDate = new Date(event.detail.value);
+        this.currentpage = 1;
         this.performSearch();
     }
     performSearch(delay = 0) {
         setTimeout(() => {
-            this.getCount(this.searchKey);
+            this.getCount();
         }, delay);
     }
-    getCount(searchString) {
-        getPositionsCount({searchString: searchString})
+    getCount() {
+        getPositionsCount({
+            searchString: this.searchKey,
+            salary: this.minSalary,
+            maxPostedDate: this.maxPostedDate
+        })
             .then(recordsCount => {
                 this.totalrecords = recordsCount;
                 if (recordsCount !== 0 && !isNaN(recordsCount)) {

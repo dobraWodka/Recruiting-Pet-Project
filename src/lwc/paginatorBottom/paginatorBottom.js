@@ -9,6 +9,7 @@ import {fireEvent, registerListener, unregisterAllListeners} from "c/pubsub";
 export default class PaginatorBottom extends LightningElement {
     totalrecords;
     currentpage;
+    pagesize;
     page = 1;
 
     @wire(CurrentPageReference) pageRef;

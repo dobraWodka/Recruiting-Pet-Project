@@ -2,30 +2,19 @@
  * Created by yurii.bubis on 10/26/2022.
  */
 
-import {api, LightningElement, track} from 'lwc';
+import {api, LightningElement} from 'lwc';
 import {ShowToastEvent} from "lightning/platformShowToastEvent";
 import processApplication from '@salesforce/apex/JobApplicationHelper.processApplication';
-
-
-const CSS_CLASS = 'modal-hidden';
 
 export default class Modal extends LightningElement {
     @api showModal;
     @api selectedPositions;
     selectedPositionsIds = [];
-    candidate;
-    savedRecordId;
-    fileUplodaed;
-    fileReader;
-    file;
-    content;
-    fileContents;
-    position;
+    fileUploaded;
     fileName;
     candidateJson;
     imageJson;
     selectedPositionsJson;
-    fileToStringify;
 
     @api show() {
         this.showModal = true;
@@ -41,48 +30,31 @@ export default class Modal extends LightningElement {
 
     handleSubmit(event) {
         event.preventDefault();
-        const fields = event.detail.fields;
-        this.candidate = fields;
-        this.candidateJson = JSON.stringify(this.candidate);
-        console.log(this.selectedPositionsIds);
-
-        if (this.fileUplodaed) {
-            console.log("image is provided");
+        const candidate = event.detail.fields;
+        this.candidateJson = JSON.stringify(candidate);
+        if (this.fileUploaded) {
             this.uploadHelper();
         } else {
-            console.log("toast would be shown");
             this.dispatchEvent( new ShowToastEvent ({
                 title: "Upload your photo",
                 message: "To submit your application you need to provide your photo",
                 variant: "warning"
             }));
         }
-
     }
 
-    handleSuccess(event) {
-        console.log()
-        this.savedRecordId = event.detail.id;
-        this.dispatchEvent(new CustomEvent("recordsuccess", {detail: this.savedRecordId}));
-        this.hide();
-        //
-        // const toast = new ShowToastEvent({
-        //     title: "Success!",
-        //     variant: "success",
-        //     message: "Job application created successfully"
-        // });
-        // this.dispatchEvent(toast);
+    handleReset() {
+        this.template.querySelectorAll('lightning-input-field').forEach(element => {
+            if (element.type === 'checkbox' || element.type === 'checkbox-button') {
+                element.checked = false;
+            } else {
+                element.value = null;
+            }
+        });
+        this.fileUploaded = null;
+        this.fileName = null;
     }
 
-    // handleUploadFinished(event) {
-    //     const toast = new ShowToastEvent({
-    //         title: "Success!",
-    //         variant: "success",
-    //         message: "Image uploaded successfully"
-    //     });
-    //     this.dispatchEvent(toast);
-    //     this.hide();
-    // }
     handleFilesChange(event) {
         if (event.target.files.length === 0) {
             if (event.target.files[0].type != 'image/jpeg' && event.target.files[0].type != 'image/png') {
@@ -90,60 +62,49 @@ export default class Modal extends LightningElement {
             }
         } else {
             console.log('inside handeFilesChange');
-            this.fileUplodaed = event.target.files[0];
+            this.fileUploaded = event.target.files[0];
             this.fileName = event.target.files[0].name;
-
         }
-
     }
-    handleSave() {
-        // if (this.fileUplodaed.length > 0) {
-            console.log("inside handleSave");
-            this.uploadHelper();
 
-        // }
-    }
     uploadHelper() {
-        this.file = this.fileUplodaed;
-        this.fileReader = new FileReader();
-        // set onload function of FileReader object
-        this.fileReader.onloadend = (() => {
-            this.fileContents = this.fileReader.result;
-            let base64 = 'base64,';
-            this.content = this.fileContents.indexOf(base64) + base64.length;
-            this.fileContents = this.fileContents.substring(this.content);
-
-            this.fileToStringify = {
-                "fileName": this.fileUplodaed.name,
-                "base64": encodeURIComponent(this.fileContents)
+        const file = this.fileUploaded;
+        const fileReader = new FileReader();
+        fileReader.onloadend = (() => {
+            let fileContents = fileReader.result;
+            const base64 = 'base64,';
+            const content = fileContents.indexOf(base64) + base64.length;
+            fileContents = fileContents.substring(content);
+            const fileToStringify = {
+                "fileName": this.fileName,
+                "base64": encodeURIComponent(fileContents)
             };
-            this.imageJson = JSON.stringify(this.fileToStringify);
+            this.imageJson = JSON.stringify(fileToStringify);
             this.selectedPositionsJson = JSON.stringify(this.selectedPositionsIds);
-            processApplication({candidateJson: this.candidateJson,
-                    imageJson: this.imageJson ,
-                    selectedPositionsIds: JSON.stringify(this.selectedPositionsIds)
-            })
-                .then((result) => {
-                    this.dispatchEvent( new ShowToastEvent({
-                        title: "Success",
-                        message: "Job application created successfully!",
-                        variant: "success"
-                    }));
-                    this.hide();
-                    console.log("success", result)
-                })
-                .catch((error) => {
-                    console.log("error", error);
-                });
+            this.processApplication();
         });
-        this.fileReader.readAsDataURL(this.file);
-
+        fileReader.readAsDataURL(file);
     }
 
-    handleModalClose() {
-        //Let parent know that dialog is closed (mainly by that cross button) so it can set proper variables if needed
-        const closedialog = new CustomEvent('closedialog');
-        this.dispatchEvent(closedialog);
-        this.hide();
+    processApplication() {
+        processApplication({candidateJson: this.candidateJson,
+            imageJson: this.imageJson ,
+            selectedPositionsIds: JSON.stringify(this.selectedPositionsIds)
+        })
+            .then((result) => {
+                this.dispatchEvent( new ShowToastEvent({
+                    title: "Success",
+                    message: "Job application created successfully!",
+                    variant: "success"
+                }));
+                this.hide();
+            })
+            .catch((error) => {
+                this.dispatchEvent( new ShowToastEvent({
+                    title: "Error",
+                    message: error,
+                    variant: "error"
+                }));
+            });
     }
 }
