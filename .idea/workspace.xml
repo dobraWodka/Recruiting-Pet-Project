@@ -1,24 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d23c6485-41d8-47da-8d36-27cf58a798a6" name="Changes" comment="Modal has been refactored, some bugs been fixed">
-      <change afterPath="$PROJECT_DIR$/src/lwc/toastDispatcher/toastDispatcher.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lwc/toastDispatcher/toastDispatcher.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lwc/toastDispatcher/toastDispatcher.js-meta.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/classes/JobApplicationHelper.cls" beforeDir="false" afterPath="$PROJECT_DIR$/src/classes/JobApplicationHelper.cls" afterDir="false" />
+    <list default="true" id="d23c6485-41d8-47da-8d36-27cf58a798a6" name="Changes" comment="Addad all project to repo, changed LWC components to use Labels and constants">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/lwc/harnessApp/harnessApp.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/lwc/harnessApp/harnessApp.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lwc/harnessApp/harnessApp.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/lwc/harnessApp/harnessApp.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lwc/jobPositionTile/jobPositionTile.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/lwc/jobPositionTile/jobPositionTile.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lwc/jobPositionTile/jobPositionTile.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/lwc/jobPositionTile/jobPositionTile.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lwc/jobPositionTile/jobPositionTile.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/lwc/jobPositionTile/jobPositionTile.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lwc/modal/modal.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/lwc/modal/modal.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/lwc/modal/modal.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/lwc/modal/modal.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lwc/paginatorBottom/paginatorBottom.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/lwc/paginatorBottom/paginatorBottom.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lwc/paginatorBottom/paginatorBottom.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/lwc/paginatorBottom/paginatorBottom.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lwc/searchBar/searchBar.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/lwc/searchBar/searchBar.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lwc/searchBar/searchBar.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/lwc/searchBar/searchBar.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lwc/selectedPositions/selectedPositions.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/lwc/selectedPositions/selectedPositions.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lwc/selectedPositions/selectedPositions.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/lwc/selectedPositions/selectedPositions.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lwc/toastDispatcher/toastDispatcher.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lwc/toastDispatcher/toastDispatcher.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/lwc/toastDispatcher/toastDispatcher.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -89,23 +77,20 @@
                       <entry key="APEXCLASS:QUEABLERECRUITMENTINTEGRATION" value="1666597188000" />
                       <entry key="APEXCLASS:RECRUITMENTINTEGRATION" value="1667380907643" />
                       <entry key="APEXTRIGGER:CANDIDATETRIGGER" value="1666246367054" />
-                      <entry key="APEXTRIGGER:CONTENTTRIGGER" value="1666622363915" />
                       <entry key="APEXTRIGGER:JOBAPPLICATIONTRIGGER" value="1667910815872" />
-                      <entry key="LIGHTNINGCOMPONENTBUNDLE:HARNESSAPP" value="1667996106692" />
+                      <entry key="LIGHTNINGCOMPONENTBUNDLE:HARNESSAPP" value="1668003550000" />
                       <entry key="LIGHTNINGCOMPONENTBUNDLE:IMAGEUPLOADER" value="1667232625000" />
                       <entry key="LIGHTNINGCOMPONENTBUNDLE:JOBAPPLICATION" value="1666881559000" />
-                      <entry key="LIGHTNINGCOMPONENTBUNDLE:JOBPOSITIONTILE" value="1667997569000" />
-                      <entry key="LIGHTNINGCOMPONENTBUNDLE:MODAL" value="1667997424864" />
+                      <entry key="LIGHTNINGCOMPONENTBUNDLE:JOBPOSITIONTILE" value="1667997664397" />
+                      <entry key="LIGHTNINGCOMPONENTBUNDLE:MODAL" value="1668003775610" />
                       <entry key="LIGHTNINGCOMPONENTBUNDLE:MODALFILE" value="1666788977032" />
                       <entry key="LIGHTNINGCOMPONENTBUNDLE:PAGINATORBOTTOM" value="1667995608936" />
                       <entry key="LIGHTNINGCOMPONENTBUNDLE:PAGINATORBOTTOM2" value="1666885584000" />
                       <entry key="LIGHTNINGCOMPONENTBUNDLE:PAGINATORPARENT" value="1667923596380" />
-                      <entry key="LIGHTNINGCOMPONENTBUNDLE:POSITIONDETAILS" value="1666699410884" />
                       <entry key="LIGHTNINGCOMPONENTBUNDLE:PUBSUB" value="1667578393000" />
-                      <entry key="LIGHTNINGCOMPONENTBUNDLE:RECORDLIST2" value="1666887761946" />
                       <entry key="LIGHTNINGCOMPONENTBUNDLE:SEARCHBAR" value="1667994891000" />
                       <entry key="LIGHTNINGCOMPONENTBUNDLE:SELECTEDPOSITIONS" value="1667995944000" />
-                      <entry key="LIGHTNINGCOMPONENTBUNDLE:TOASTDISPATCHER" value="1667985828315" />
+                      <entry key="LIGHTNINGCOMPONENTBUNDLE:TOASTDISPATCHER" value="1668003671532" />
                     </map>
                   </option>
                 </ConnectionWorkspaceSettings>
@@ -197,7 +182,7 @@
       <workItem from="1667804926193" duration="18466000" />
       <workItem from="1667828975840" duration="13510000" />
       <workItem from="1667892578105" duration="23336000" />
-      <workItem from="1667980056622" duration="14995000" />
+      <workItem from="1667980056622" duration="17269000" />
     </task>
     <task id="LOCAL-00001" summary="Version that supports one Position at a time">
       <created>1667216898330</created>
@@ -290,7 +275,14 @@
       <option name="project" value="LOCAL" />
       <updated>1667928960556</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="Addad all project to repo, changed LWC components to use Labels and constants">
+      <created>1667998305620</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1667998305621</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -318,7 +310,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="main" />
+                        <option value="develop" />
                       </list>
                     </value>
                   </entry>
@@ -343,6 +335,7 @@
     <MESSAGE value="Implemented SearchBar component" />
     <MESSAGE value="A LOT of small refactoring, refinements and adjustments" />
     <MESSAGE value="Modal has been refactored, some bugs been fixed" />
-    <option name="LAST_COMMIT_MESSAGE" value="Modal has been refactored, some bugs been fixed" />
+    <MESSAGE value="Addad all project to repo, changed LWC components to use Labels and constants" />
+    <option name="LAST_COMMIT_MESSAGE" value="Addad all project to repo, changed LWC components to use Labels and constants" />
   </component>
 </project>

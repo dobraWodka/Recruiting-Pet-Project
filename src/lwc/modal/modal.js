@@ -4,6 +4,7 @@
 
 import {api, LightningElement} from 'lwc';
 import {ShowToastEvent} from "lightning/platformShowToastEvent";
+import {dispatchToast} from "c/toastDispatcher";
 import processApplication from '@salesforce/apex/JobApplicationHelper.processApplication';
 import Upload_photo_title from "@salesforce/label/c.Upload_photo_title";
 import Upload_photo_message from "@salesforce/label/c.Upload_photo_message";
@@ -62,7 +63,7 @@ export default class Modal extends LightningElement {
         if (this.fileUploaded) {
             this.uploadHelper();
         } else {
-            this.dispatchToast(
+            dispatchToast(
                 Upload_photo_title,
                 Upload_photo_message,
                 CONSTANTS.toastWarning
@@ -118,7 +119,7 @@ export default class Modal extends LightningElement {
             selectedPositionsIds: JSON.stringify(this.selectedPositionsIds)
         })
             .then((result) => {
-                this.dispatchToast(
+                dispatchToast(
                     Success,
                     Success_Job_Application,
                     CONSTANTS.toastSuccess
@@ -127,18 +128,18 @@ export default class Modal extends LightningElement {
                 this.hide(true);
             })
             .catch((error) => {
-                this.dispatchToast(
+                dispatchToast(
                     Error,
                     error,
                     CONSTANTS.toastError
                 );
             });
     }
-    dispatchToast(title, message, variant) {
-        this.dispatchEvent( new ShowToastEvent({
-            title: title,
-            message: message,
-            variant: variant
-        }));
-    }
+    // dispatchToast(title, message, variant) {
+    //     this.dispatchEvent( new ShowToastEvent({
+    //         title: title,
+    //         message: message,
+    //         variant: variant
+    //     }));
+    // }
 }

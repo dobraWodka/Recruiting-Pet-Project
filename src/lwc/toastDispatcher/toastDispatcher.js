@@ -4,17 +4,12 @@
 
 import {ShowToastEvent} from "lightning/platformShowToastEvent";
 
-const dispatchToast =  () =>  {
-    console.log("inside dispatchToast");
-        // this.dispatchEvent( new ShowToastEvent({
-        //     title: title,
-        //     message: message,
-        //     variant: variant
-        // }));
-    this.dispatchEvent( new ShowToastEvent ({
-        title: "Upload your photo",
-        message: "To submit your application you need to provide your photo",
-        variant: "warning"
+const dispatchToast = (title, message, variant, messageData) =>  {
+    dispatchEvent( new ShowToastEvent ({
+        title: title ?? "" ,
+        message: message ?? "Unknown Error",
+        variant: variant ?? "error",
+        messageData: messageData ?? ""
     }));
     }
 export {dispatchToast}
