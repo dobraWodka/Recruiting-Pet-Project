@@ -5,10 +5,16 @@
 import {LightningElement, track, wire} from 'lwc';
 import {CurrentPageReference} from "lightning/navigation";
 import {fireEvent, registerListener} from "c/pubsub";
+import Selected_positions from "@salesforce/label/c.Selected_positions";
+import Submit_applications from "@salesforce/label/c.Submit_applications";
+
+
 
 export default class SelectedPositions extends LightningElement {
     showModal
     showSubmitButton
+    selectedPositionsLabel = Selected_positions;
+    submitApplicationLabel = Submit_applications;
     @track selectedPositions = [];
 
     @wire(CurrentPageReference) pageRef;

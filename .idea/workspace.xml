@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="d23c6485-41d8-47da-8d36-27cf58a798a6" name="Changes" comment="Modal has been refactored, some bugs been fixed">
+      <change afterPath="$PROJECT_DIR$/src/lwc/toastDispatcher/toastDispatcher.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lwc/toastDispatcher/toastDispatcher.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lwc/toastDispatcher/toastDispatcher.js-meta.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/classes/JobApplicationHelper.cls" beforeDir="false" afterPath="$PROJECT_DIR$/src/classes/JobApplicationHelper.cls" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lwc/harnessApp/harnessApp.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/lwc/harnessApp/harnessApp.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lwc/harnessApp/harnessApp.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/lwc/harnessApp/harnessApp.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lwc/jobPositionTile/jobPositionTile.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/lwc/jobPositionTile/jobPositionTile.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lwc/jobPositionTile/jobPositionTile.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/lwc/jobPositionTile/jobPositionTile.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lwc/jobPositionTile/jobPositionTile.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/lwc/jobPositionTile/jobPositionTile.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lwc/modal/modal.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/lwc/modal/modal.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lwc/modal/modal.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/lwc/modal/modal.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lwc/paginatorBottom/paginatorBottom.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/lwc/paginatorBottom/paginatorBottom.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lwc/paginatorBottom/paginatorBottom.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/lwc/paginatorBottom/paginatorBottom.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lwc/searchBar/searchBar.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/lwc/searchBar/searchBar.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lwc/searchBar/searchBar.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/lwc/searchBar/searchBar.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lwc/selectedPositions/selectedPositions.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/lwc/selectedPositions/selectedPositions.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lwc/selectedPositions/selectedPositions.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/lwc/selectedPositions/selectedPositions.js" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+        <option value="Apex Trigger" />
+        <option value="Lightning Web Component CSS" />
+        <option value="Apex Class" />
+        <option value="Lightning Web Component HTML" />
+        <option value="Lightning Web Component JavaScript" />
+        <option value="Apex Metadata" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IlluminatedCloudWorkspaceSettings">
+    <option name="moduleWorkspaceSettings">
+      <map>
+        <entry key="Communities">
+          <value>
+            <ModuleWorkspaceSettings>
+              <option name="moduleContentsLastModified" value="1666018222872" />
+            </ModuleWorkspaceSettings>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="projectWorkspaceSettings">
+      <ProjectWorkspaceSettings>
+        <option name="anonymousApexSettings">
+          <AnonymousApexSettings>
+            <option name="savedDocuments">
+              <list>
+                <AnonymousApexSavedDocument>
+                  <option name="apexLogLevel" value="FINEST" />
+                  <option name="body" value="RecruitmentIntegration.returnAccessToken();" />
+                  <option name="name" value="Anonymous Apex 1" />
+                </AnonymousApexSavedDocument>
+              </list>
+            </option>
+          </AnonymousApexSettings>
+        </option>
+        <option name="connectionWorkspaceSettings">
+          <map>
+            <entry key="Communities">
+              <value>
+                <ConnectionWorkspaceSettings>
+                  <option name="buildSuccessDatesBySourceRootRelativePath">
+                    <map>
+                      <entry key="APEXCLASS:IMAGEUPLOADERHANDLER" value="1666872167804" />
+                      <entry key="APEXCLASS:JOBAPLICATIONHELPER" value="1666938113405" />
+                      <entry key="APEXCLASS:JOBAPPLICATION" value="1666189257990" />
+                      <entry key="APEXCLASS:JOBAPPLICATIONHELPER" value="1667992622000" />
+                      <entry key="APEXCLASS:MANAGERECORDSCONTROLLER" value="1666885704000" />
+                      <entry key="APEXCLASS:POSITIONSOBTAINER" value="1666937957960" />
+                      <entry key="APEXCLASS:QUEABLERECRUITMENTINTEGRATION" value="1666597188000" />
+                      <entry key="APEXCLASS:RECRUITMENTINTEGRATION" value="1667380907643" />
+                      <entry key="APEXTRIGGER:CANDIDATETRIGGER" value="1666246367054" />
+                      <entry key="APEXTRIGGER:CONTENTTRIGGER" value="1666622363915" />
+                      <entry key="APEXTRIGGER:JOBAPPLICATIONTRIGGER" value="1667910815872" />
+                      <entry key="LIGHTNINGCOMPONENTBUNDLE:HARNESSAPP" value="1667996106692" />
+                      <entry key="LIGHTNINGCOMPONENTBUNDLE:IMAGEUPLOADER" value="1667232625000" />
+                      <entry key="LIGHTNINGCOMPONENTBUNDLE:JOBAPPLICATION" value="1666881559000" />
+                      <entry key="LIGHTNINGCOMPONENTBUNDLE:JOBPOSITIONTILE" value="1667997569000" />
+                      <entry key="LIGHTNINGCOMPONENTBUNDLE:MODAL" value="1667997424864" />
+                      <entry key="LIGHTNINGCOMPONENTBUNDLE:MODALFILE" value="1666788977032" />
+                      <entry key="LIGHTNINGCOMPONENTBUNDLE:PAGINATORBOTTOM" value="1667995608936" />
+                      <entry key="LIGHTNINGCOMPONENTBUNDLE:PAGINATORBOTTOM2" value="1666885584000" />
+                      <entry key="LIGHTNINGCOMPONENTBUNDLE:PAGINATORPARENT" value="1667923596380" />
+                      <entry key="LIGHTNINGCOMPONENTBUNDLE:POSITIONDETAILS" value="1666699410884" />
+                      <entry key="LIGHTNINGCOMPONENTBUNDLE:PUBSUB" value="1667578393000" />
+                      <entry key="LIGHTNINGCOMPONENTBUNDLE:RECORDLIST2" value="1666887761946" />
+                      <entry key="LIGHTNINGCOMPONENTBUNDLE:SEARCHBAR" value="1667994891000" />
+                      <entry key="LIGHTNINGCOMPONENTBUNDLE:SELECTEDPOSITIONS" value="1667995944000" />
+                      <entry key="LIGHTNINGCOMPONENTBUNDLE:TOASTDISPATCHER" value="1667985828315" />
+                    </map>
+                  </option>
+                </ConnectionWorkspaceSettings>
+              </value>
+            </entry>
+            <entry key="Main Org">
+              <value>
+                <ConnectionWorkspaceSettings />
+              </value>
+            </entry>
+            <entry key="Recruting Main">
+              <value>
+                <ConnectionWorkspaceSettings />
+              </value>
+            </entry>
+          </map>
+        </option>
+        <option name="soqlQuerySettings">
+          <SoqlQuerySettings>
+            <option name="resultsSplitterProportion" value="0.41037735" />
+            <option name="savedDocuments">
+              <list>
+                <SoqlQuerySavedDocument>
+                  <option name="body" value="select count() from Position__c where Name like '%id%'" />
+                  <option name="name" value="SOQL Query 1" />
+                </SoqlQuerySavedDocument>
+              </list>
+            </option>
+          </SoqlQuerySettings>
+        </option>
+      </ProjectWorkspaceSettings>
+    </option>
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2GGcBBL0eUqXhtLDxZG9h00hZeq" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectReloadState">
+    <option name="STATE" value="1" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/yurii.bubis/WebstormProjects/FirstProject&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;settings.javascript.prettier&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
+      &quot;HTML&quot;
+    ]
+  }
+}</component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="d23c6485-41d8-47da-8d36-27cf58a798a6" name="Changes" comment="" />
+      <created>1666018223924</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1666018223924</updated>
+      <workItem from="1666018225194" duration="81000" />
+      <workItem from="1666018337051" duration="5168000" />
+      <workItem from="1666074042664" duration="35880000" />
+      <workItem from="1666247764514" duration="36817000" />
+      <workItem from="1666592678191" duration="6982000" />
+      <workItem from="1666603883954" duration="12604000" />
+      <workItem from="1666679503721" duration="24249000" />
+      <workItem from="1666773554012" duration="15562000" />
+      <workItem from="1666795613561" duration="5310000" />
+      <workItem from="1666877601419" duration="12510000" />
+      <workItem from="1666937271693" duration="15271000" />
+      <workItem from="1667200243709" duration="52844000" />
+      <workItem from="1667375316189" duration="65000" />
+      <workItem from="1667375384258" duration="16573000" />
+      <workItem from="1667486532159" duration="66000" />
+      <workItem from="1667486834440" duration="9000" />
+      <workItem from="1667488895505" duration="43000" />
+      <workItem from="1667488944837" duration="26912000" />
+      <workItem from="1667583951291" duration="11000" />
+      <workItem from="1667804926193" duration="18466000" />
+      <workItem from="1667828975840" duration="13510000" />
+      <workItem from="1667892578105" duration="23336000" />
+      <workItem from="1667980056622" duration="14995000" />
+    </task>
+    <task id="LOCAL-00001" summary="Version that supports one Position at a time">
+      <created>1667216898330</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1667216898330</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Version that supports one Position at a time 2">
+      <created>1667305421364</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1667305421364</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Added LWC components">
+      <created>1667313594552</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1667313594552</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Added LWC components and refactored classes">
+      <created>1667396830366</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1667396830366</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Selected Position in now in separate component and comunication is made via PubSub">
+      <created>1667819401866</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1667819401866</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Selected Position in now in separate component and comunication is made via PubSub, now everything works almost as intended">
+      <created>1667820922768</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1667820922768</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Selected Position in now in separate component and comunication is made via PubSub, now everything works almost as intended, all unnesessary lines are commented">
+      <created>1667824727796</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1667824727796</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Selected Position in now in separate component and comunication is made via PubSub, now everything works almost as intended, all unnesessary lines are removed">
+      <created>1667825017212</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1667825017212</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Selected Position in now in separate component and comunication is made via PubSub, now everything works almost as intended, all unnesessary lines are removed, added all components exept Modal">
+      <created>1667826499028</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1667826499028</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Implemented SearchBar component">
+      <created>1667835910075</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1667835910075</updated>
+    </task>
+    <task id="LOCAL-00011" summary="A LOT of small refactoring, refinements and adjustments">
+      <created>1667843343777</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1667843343777</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Modal has been refactored, some bugs been fixed">
+      <created>1667905661118</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1667905661118</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Modal has been refactored, some bugs been fixed">
+      <created>1667928960556</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1667928960556</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ID_ORDER">
+      <list>
+        <option value="Default.Root" />
+        <option value="Default.Author" />
+        <option value="Default.Date" />
+        <option value="Default.Subject" />
+        <option value="Space.CommitStatus" />
+      </list>
+    </option>
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="main" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Version that supports one Position at a time" />
+    <MESSAGE value="Version that supports one Position at a time 2" />
+    <MESSAGE value="Added LWC components" />
+    <MESSAGE value="Added LWC components and refactored classes" />
+    <MESSAGE value="Selected Position in now in separate component and comunication is made via PubSub" />
+    <MESSAGE value="Selected Position in now in separate component and comunication is made via PubSub, now everything works almost as intended" />
+    <MESSAGE value="Selected Position in now in separate component and comunication is made via PubSub, now everything works almost as intended, all unnesessary lines are commented" />
+    <MESSAGE value="Selected Position in now in separate component and comunication is made via PubSub, now everything works almost as intended, all unnesessary lines are removed" />
+    <MESSAGE value="Selected Position in now in separate component and comunication is made via PubSub, now everything works almost as intended, all unnesessary lines are removed, added all components exept Modal" />
+    <MESSAGE value="Implemented SearchBar component" />
+    <MESSAGE value="A LOT of small refactoring, refinements and adjustments" />
+    <MESSAGE value="Modal has been refactored, some bugs been fixed" />
+    <option name="LAST_COMMIT_MESSAGE" value="Modal has been refactored, some bugs been fixed" />
+  </component>
+</project>

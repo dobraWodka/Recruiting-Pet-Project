@@ -4,9 +4,9 @@
 
 <!-- Selected Positions -->
 <template>
-    <lightning-card title="Selected Positions">
+    <lightning-card title={selectedPositionsLabel}>
         <template if:true={showSubmitButton}>
-            <lightning-button label="Submit application for this positions"
+            <lightning-button label={submitApplicationLabel}
                               variant="brand" slot="actions"
                               onclick={submitApplication}
             ></lightning-button>

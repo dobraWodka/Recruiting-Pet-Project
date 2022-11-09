@@ -6,23 +6,23 @@
 <template>
     <lightning-layout vertical-align="center" horizontal-align="center">
         <lightning-layout-item>
-            <lightning-button label="First" icon-name="utility:chevronleft" onclick={handleFirst}
+            <lightning-button label={firstLabel} icon-name="utility:chevronleft" onclick={handleFirst}
                               disabled={showFirstButton}></lightning-button>
         </lightning-layout-item>
         <lightning-layout-item>
-            <lightning-button label="Previous" icon-name="utility:chevronleft" onclick={handlePrevious}
+            <lightning-button label={previousLabel} icon-name="utility:chevronleft" onclick={handlePrevious}
                               disabled={showFirstButton} class="slds-m-horizontal_small"></lightning-button>
         </lightning-layout-item>
         <lightning-layout-item class="slds-p-horizontal_small">
-            <p class="content"> Page <b>{currentpage}</b> of <b> {totalPages}</b> </p>
-            <p class="content">Total records: <b>{totalrecords} </b></p>
+            <p class="content">{pageLabel} <b>{page}</b> {ofLabel} <b> {totalPages}</b> </p>
+            <p class="content">{totalRecordsLabel} <b>{totalRecords} </b></p>
         </lightning-layout-item>
         <lightning-layout-item>
-            <lightning-button label="Next" icon-name="utility:chevronright" icon-position="right" onclick={handleNext}
+            <lightning-button label={nextLabel} icon-name="utility:chevronright" icon-position="right" onclick={handleNext}
                               disabled={showLastButton} class="slds-m-horizontal_small"></lightning-button>
         </lightning-layout-item>
         <lightning-layout-item>
-            <lightning-button label="Last" icon-name="utility:chevronright" icon-position="right" onclick={handleLast}
+            <lightning-button label={lastLabel} icon-name="utility:chevronright" icon-position="right" onclick={handleLast}
                               disabled={showLastButton}></lightning-button>
         </lightning-layout-item>
     </lightning-layout>

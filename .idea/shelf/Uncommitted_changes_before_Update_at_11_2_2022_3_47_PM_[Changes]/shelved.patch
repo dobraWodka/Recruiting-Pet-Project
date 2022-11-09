@@ -1,0 +1,256 @@
+Index: src/lwc/modal/modal.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/**\r\n * Created by yurii.bubis on 10/26/2022.\r\n */\r\n\r\nimport {api, LightningElement, track} from 'lwc';\r\nimport {ShowToastEvent} from \"lightning/platformShowToastEvent\";\r\nimport saveCandidate from '@salesforce/apex/RecruitmentIntegration.saveCandidate';\r\n\r\n\r\nconst CSS_CLASS = 'modal-hidden';\r\n\r\nexport default class Modal extends LightningElement {\r\n    @api showModal;\r\n    candidate;\r\n    savedRecordId;\r\n    fileUplodaed;\r\n    fileReader;\r\n    file;\r\n    content;\r\n    fileContents;\r\n    position;\r\n    fileName;\r\n    candidateJson;\r\n    imageJson;\r\n    fileToStringify;\r\n\r\n\r\n    @api show() {\r\n        this.showModal = true;\r\n    }\r\n\r\n    @api hide() {\r\n        this.showModal = false;\r\n        this.dispatchEvent(new CustomEvent('modalclosed'));\r\n    }\r\n\r\n    handleSubmit(event) {\r\n        event.preventDefault();\r\n        const fields = event.detail.fields;\r\n        this.candidate = fields;\r\n        this.candidateJson = JSON.stringify(this.candidate);\r\n\r\n        if (this.fileUplodaed) {\r\n            console.log(\"image is provided\");\r\n            this.uploadHelper();\r\n        } else {\r\n            console.log(\"toast would be shown\");\r\n            this.dispatchEvent( new ShowToastEvent ({\r\n                title: \"Upload your photo\",\r\n                message: \"To submit your application you need to provide your photo\",\r\n                variant: \"warning\"\r\n            }));\r\n        }\r\n\r\n    }\r\n\r\n    handleSuccess(event) {\r\n        console.log()\r\n        this.savedRecordId = event.detail.id;\r\n        this.dispatchEvent(new CustomEvent(\"recordsuccess\", {detail: this.savedRecordId}));\r\n        this.hide();\r\n        //\r\n        // const toast = new ShowToastEvent({\r\n        //     title: \"Success!\",\r\n        //     variant: \"success\",\r\n        //     message: \"Job application created successfully\"\r\n        // });\r\n        // this.dispatchEvent(toast);\r\n    }\r\n\r\n    // handleUploadFinished(event) {\r\n    //     const toast = new ShowToastEvent({\r\n    //         title: \"Success!\",\r\n    //         variant: \"success\",\r\n    //         message: \"Image uploaded successfully\"\r\n    //     });\r\n    //     this.dispatchEvent(toast);\r\n    //     this.hide();\r\n    // }\r\n    handleFilesChange(event) {\r\n        if (event.target.files.length === 0) {\r\n            if (event.target.files[0].type != 'image/jpeg' && event.target.files[0].type != 'image/png') {\r\n                this.fileName = \"Invalid file type!\";\r\n            }\r\n        } else {\r\n            console.log('inside handeFilesChange');\r\n            this.fileUplodaed = event.target.files[0];\r\n            this.fileName = event.target.files[0].name;\r\n\r\n        }\r\n\r\n    }\r\n    handleSave() {\r\n        // if (this.fileUplodaed.length > 0) {\r\n            console.log(\"inside handleSave\");\r\n            this.uploadHelper();\r\n\r\n        // }\r\n    }\r\n    uploadHelper() {\r\n        this.file = this.fileUplodaed;\r\n        this.fileReader = new FileReader();\r\n        // set onload function of FileReader object\r\n        this.fileReader.onloadend = (() => {\r\n            this.fileContents = this.fileReader.result;\r\n            let base64 = 'base64,';\r\n            this.content = this.fileContents.indexOf(base64) + base64.length;\r\n            this.fileContents = this.fileContents.substring(this.content);\r\n\r\n            this.fileToStringify = {\r\n                \"fileName\": this.fileUplodaed.name,\r\n                \"base64\": encodeURIComponent(this.fileContents)\r\n            };\r\n            this.imageJson = JSON.stringify(this.fileToStringify);\r\n\r\n            saveCandidate({candidateJson: this.candidateJson, imageJson: this.imageJson})\r\n                .then((result) => {\r\n                    this.dispatchEvent( new ShowToastEvent({\r\n                        title: \"Success\",\r\n                        message: \"Job application created successfully!\",\r\n                        variant: \"success\"\r\n                    }));\r\n                    this.hide();\r\n                    console.log(\"success\", result)\r\n                })\r\n                .catch((error) => {\r\n                    console.log(\"error\", error);\r\n                });\r\n        });\r\n        this.fileReader.readAsDataURL(this.file);\r\n\r\n    }\r\n\r\n    handleModalClose() {\r\n        //Let parent know that dialog is closed (mainly by that cross button) so it can set proper variables if needed\r\n        const closedialog = new CustomEvent('closedialog');\r\n        this.dispatchEvent(closedialog);\r\n        this.hide();\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/lwc/modal/modal.js b/src/lwc/modal/modal.js
+--- a/src/lwc/modal/modal.js	(revision b759d81d7fe5007642e91e04765ee51a6409b2d1)
++++ b/src/lwc/modal/modal.js	(date 1667319300580)
+@@ -4,13 +4,14 @@
+ 
+ import {api, LightningElement, track} from 'lwc';
+ import {ShowToastEvent} from "lightning/platformShowToastEvent";
+-import saveCandidate from '@salesforce/apex/RecruitmentIntegration.saveCandidate';
++import processApplication from '@salesforce/apex/JobApplicationHelper.processApplication';
+ 
+ 
+ const CSS_CLASS = 'modal-hidden';
+ 
+ export default class Modal extends LightningElement {
+     @api showModal;
++    @api selectedPositionsIds;
+     candidate;
+     savedRecordId;
+     fileUplodaed;
+@@ -22,6 +23,7 @@
+     fileName;
+     candidateJson;
+     imageJson;
++    selectedPositionsJson;
+     fileToStringify;
+ 
+ 
+@@ -39,7 +41,7 @@
+         const fields = event.detail.fields;
+         this.candidate = fields;
+         this.candidateJson = JSON.stringify(this.candidate);
+-
++        console.log(this.selectedPositionsIds);
+         if (this.fileUplodaed) {
+             console.log("image is provided");
+             this.uploadHelper();
+@@ -112,8 +114,11 @@
+                 "base64": encodeURIComponent(this.fileContents)
+             };
+             this.imageJson = JSON.stringify(this.fileToStringify);
+-
+-            saveCandidate({candidateJson: this.candidateJson, imageJson: this.imageJson})
++            this.selectedPositionsJson = JSON.stringify(this.selectedPositionsIds);
++            processApplication({candidateJson: this.candidateJson,
++                    imageJson: this.imageJson ,
++                    selectedPositionsIds: JSON.stringify(this.selectedPositionsIds)
++            })
+                 .then((result) => {
+                     this.dispatchEvent( new ShowToastEvent({
+                         title: "Success",
+Index: src/lwc/harnessApp/harnessApp.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/**\r\n * Created by yurii.bubis on 10/27/2022.\r\n */\r\n/**\r\n * Треба перемістити апекс методи з paginatorParent сюди і виконувати пошук тут.\r\n * Можуть виникати проблеми з паджинацією, можливо вся ця затія не вартує того і\r\n * ми просто строку пошуку залишимо в елементі paginatorParent і вона буде на пів екрану.\r\n */\r\nimport {LightningElement, api, track} from 'lwc';\r\nimport {ShowToastEvent} from \"lightning/platformShowToastEvent\";\r\nimport getPositionsList from '@salesforce/apex/RecruitmentIntegration.getPositionsList';\r\nimport getPositionsCount from '@salesforce/apex/RecruitmentIntegration.getPositionsCount';\r\n\r\nconst PAGE_SIZE = 5;\r\nexport default class HarnessApp extends LightningElement {\r\n    @track page = 1;\r\n    @api totalrecords;\r\n    @api _pagesize = PAGE_SIZE;\r\n    @track selectedPositions = [];\r\n    showModal;\r\n    // searchKey;\r\n    // minSalary;\r\n    // maxPostedDate;\r\n    // @track allPositions = [];\r\n\r\n    get pagesize() {\r\n        return this._pagesize;\r\n    }\r\n    set pagesize(value) {\r\n        this._pagesize = value;\r\n    }\r\n    get showSubmitButton() {\r\n        return this.selectedPositions.length > 0;\r\n    }\r\n    handlePrevious() {\r\n        if (this.page > 1) {\r\n            this.page = this.page - 1;\r\n        }\r\n    }\r\n    handleNext() {\r\n        if (this.page < this.totalPages) {\r\n            this.page = this.page + 1;\r\n        }\r\n        console.log(\"next button pressed and value is \", this.page);\r\n    }\r\n    handleFirst() {\r\n        this.page = 1;\r\n    }\r\n    handleLast() {\r\n        this.page = this.totalPages;\r\n    }\r\n    handleRecordsLoad(event) {\r\n        console.log(\"total records \", event.detail);\r\n        this.totalrecords = event.detail;\r\n        this.totalPages = Math.ceil(this.totalrecords / this.pagesize);\r\n    }\r\n    handlePageChange(event) {\r\n        this.page = event.detail;\r\n    }\r\n    handleApply(event) {\r\n        l\r\n        const position = event.detail;\r\n        if (!this.selectedPositions.includes(position)) {\r\n            this.selectedPositions = [...this.selectedPositions, event.detail];\r\n        } else {\r\n            this.dispatchEvent( new ShowToastEvent({\r\n                title: \"Error\",\r\n                message: \"This position already in the list!\",\r\n                variant: \"warning\"\r\n            }));\r\n        }\r\n    }\r\n    handleSearchChange(event) {\r\n        console.log(\"Search in harnessApp\", JSON.parse(JSON.stringify(event.detail)));\r\n        this.searchKey = event.detail.searchKey;\r\n        this.minSalary = event.detail.minSalary;\r\n        this.maxPostedDate = event.detail.maxPostedDate;\r\n    }\r\n    removeSelectedPosition(event) {\r\n        const positionId = event.target.dataset.id;\r\n        this.selectedPositions = this.selectedPositions.filter(position => position.Id !== positionId);\r\n    }\r\n    submitApplication() {\r\n        this.showModal = true;\r\n    }\r\n    handleModalClosed() {\r\n        this.selectedPositions = [];\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/lwc/harnessApp/harnessApp.js b/src/lwc/harnessApp/harnessApp.js
+--- a/src/lwc/harnessApp/harnessApp.js	(revision b759d81d7fe5007642e91e04765ee51a6409b2d1)
++++ b/src/lwc/harnessApp/harnessApp.js	(date 1667318949796)
+@@ -17,6 +17,7 @@
+     @api totalrecords;
+     @api _pagesize = PAGE_SIZE;
+     @track selectedPositions = [];
++    @track selectedPositionsIds = [];
+     showModal;
+     // searchKey;
+     // minSalary;
+@@ -58,10 +59,14 @@
+         this.page = event.detail;
+     }
+     handleApply(event) {
+-        l
+         const position = event.detail;
++        console.log(position.Id);
++
+         if (!this.selectedPositions.includes(position)) {
+-            this.selectedPositions = [...this.selectedPositions, event.detail];
++            this.selectedPositions = [...this.selectedPositions, position];
++            this.selectedPositionsIds = [...this.selectedPositionsIds, position.Id];
++            console.log("inside if statement");
++            console.log(this.selectedPositionsIds.length);
+         } else {
+             this.dispatchEvent( new ShowToastEvent({
+                 title: "Error",
+@@ -79,6 +84,8 @@
+     removeSelectedPosition(event) {
+         const positionId = event.target.dataset.id;
+         this.selectedPositions = this.selectedPositions.filter(position => position.Id !== positionId);
++        this.selectedPositionsIds = this.selectedPositionsIds.filter(position => position !== positionId);
++
+     }
+     submitApplication() {
+         this.showModal = true;
+Index: src/lwc/harnessApp/harnessApp.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><!--\r\n - Created by yurii.bubis on 10/27/2022.\r\n -->\r\n\r\n<!-- Harness App -->\r\n<template>\r\n    <lightning-card title=\"Job Application Interface\">\r\n        <div class=\"slds-p-horizontal_large\">\r\n    <!--        <c-search-bar onsearchchange={handleSearchChange} pagesize={pagesize}-->\r\n    <!--                      currentpage={page} onrecordsload={handleRe}-->\r\n    <!--        ></c-search-bar>-->\r\n            <div class=\"slds-grid slds-gutters\">\r\n                <div class=\"slds-col slds-size_1-of-2\">\r\n                    <c-paginator-parent currentpage={page}\r\n                                        onrecordsload={handleRecordsLoad}\r\n                                        search-key={searchKey}\r\n                                        onapply={handleApply}\r\n                                        pagesize={pagesize}></c-paginator-parent>\r\n                    <div class=\"slds-m-around_medium\">\r\n                        <c-paginator-bottom onprevious={handlePrevious} onnext={handleNext} onfirst={handleFirst}\r\n                                            onlast={handleLast} currentpage={page} totalrecords={totalrecords} pagesize={pagesize}>\r\n                        </c-paginator-bottom>\r\n                    </div>\r\n                </div>\r\n                <div class=\"slds-col slds-size_1-of-2\">\r\n                    <lightning-card title=\"Selected Positions\">\r\n                        <template for:each={selectedPositions} for:item=\"position\">\r\n    <!--                        <p key={position.Id}>{position.Name}</p>-->\r\n    <!--                        <lightning-card title={position.Name} key={position.Id} class=\"slds-card_boundary\">-->\r\n    <!--                            <lightning-button-icon icon-name=\"utility:clear\" slot=\"actions\"></lightning-button-icon>-->\r\n    <!--                            <p>here will be proper list</p>-->\r\n    <!--                        </lightning-card>-->\r\n                            <div class=\"slds-grid slds-gutters slds-grid_align-spread\r\n                             slds-p-vertical_small slds-m-vertical_x-small slds-box_border\"\r\n                                 key={position.Id}\r\n                            >\r\n                                <div class=\"slds-col\">\r\n                                    <h1 style=\"font-size: 1.2rem\">{position.Name}</h1>\r\n                                </div>\r\n                                <div class=\"slds-col\">\r\n                                    <lightning-button-icon icon-name=\"utility:clear\"\r\n                                                           data-id={position.Id}\r\n                                                           onclick={removeSelectedPosition}\r\n                                                           variant=\"bare\"\r\n                                    ></lightning-button-icon>\r\n                                </div>\r\n                            </div>\r\n                        </template>\r\n                        <template if:true={showSubmitButton}>\r\n                            <lightning-button label=\"Submit application for this positions\"\r\n                                              onclick={submitApplication}\r\n                            ></lightning-button>\r\n                        </template>\r\n                        <c-modal show-modal={showModal}\r\n                                 onmodalclosed={handleModalClosed}\r\n                                 onrecordsuccess={handleRecordSuccess}\r\n                        ></c-modal>\r\n                    </lightning-card>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </lightning-card>\r\n</template>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/lwc/harnessApp/harnessApp.html b/src/lwc/harnessApp/harnessApp.html
+--- a/src/lwc/harnessApp/harnessApp.html	(revision b759d81d7fe5007642e91e04765ee51a6409b2d1)
++++ b/src/lwc/harnessApp/harnessApp.html	(date 1667319108548)
+@@ -52,6 +52,7 @@
+                             ></lightning-button>
+                         </template>
+                         <c-modal show-modal={showModal}
++                                 selected-positions-ids= {selectedPositionsIds}
+                                  onmodalclosed={handleModalClosed}
+                                  onrecordsuccess={handleRecordSuccess}
+                         ></c-modal>
+Index: src/lwc/paginatorParent/paginatorParent.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/**\r\n * Created by yurii.bubis on 10/27/2022.\r\n */\r\n\r\nimport {api, LightningElement, track} from 'lwc';\r\nimport getPositionsList from '@salesforce/apex/RecruitmentIntegration.getPositionsList';\r\nimport getPositionsCount from '@salesforce/apex/RecruitmentIntegration.getPositionsCount';\r\n\r\nexport default class PaginatorParent extends LightningElement {\r\n    @track error;\r\n    @track allPositions;\r\n    @api pagesize;\r\n    @api currentpage;\r\n    @api searchKey;\r\n    totalrecords;\r\n    totalpages;\r\n    isSearchChangeExecuted = false;\r\n    localCurrentPage = null;\r\n    @track showDetails = false;\r\n    @track detailIsExpanded;\r\n    selectedPosition;\r\n\r\n    handleSearchChange(event) {\r\n        if (this.searchKey !== event.target.value) {\r\n            this.isSearchChangeExecuted = false;\r\n            this.searchKey = event.target.value;\r\n            this.currentpage = 1;\r\n            console.log(\"Current searchWord \", this.searchKey);\r\n\r\n        }\r\n    }\r\n    renderedCallback() {\r\n        console.log(\"searchKey in paginatorParent\", this.searchKey);\r\n        // let rightNow = new Date();\r\n        // rightNow.setMinutes(\r\n        //     new Date().getMinutes() - new Date().getTimezoneOffset()\r\n        // );\r\n        // this.today = rightNow.toISOString().slice(0, 10);\r\n        // this.maxPostedDate = new Date(\"2000-01-01\");\r\n\r\n        if (this.isSearchChangeExecuted && (this.localCurrentPage === this.currentpage)) {\r\n            console.log(\"currentpage\", this.currentpage);\r\n            console.log(\"localcurrentpage\", this.localCurrentPage);\r\n            console.log(\"isSearchChangeExecuted\", this.isSearchChangeExecuted);\r\n            return;\r\n        }\r\n        this.isSearchChangeExecuted = true;\r\n        this.localCurrentPage = this.currentpage;\r\n        console.log(\"executing apex methods\");\r\n        getPositionsCount({searchString: this.searchKey})\r\n            .then(recordsCount => {\r\n                this.totalrecords = recordsCount;\r\n                console.log(\"recordsCount\", recordsCount);\r\n                if (recordsCount !== 0 && !isNaN(recordsCount)) {\r\n                    this.totalpages = Math.ceil(recordsCount / this.pagesize);\r\n                    getPositionsList({\r\n                        pagenumber: this.currentpage,\r\n                        numberOfRecords: recordsCount,\r\n                        pageSize: this.pagesize,\r\n                        searchString: this.searchKey\r\n                    })\r\n                        .then(positionList => {\r\n                            console.log(\"getPositionList successfullt\");\r\n                            this.allPositions = positionList;\r\n                            this.error = undefined;\r\n                        })\r\n                        .catch(error => {\r\n                            this.error = error;\r\n                            this.allPositions = undefined;\r\n                        });\r\n                } else {\r\n                    this.allPositions = [];\r\n                    this.totalpages = 1;\r\n                    this.totalrecords = 0;\r\n                }\r\n                const event = new CustomEvent('recordsload', {\r\n                    detail: recordsCount\r\n                });\r\n                this.dispatchEvent(event);\r\n            })\r\n            .catch(error => {\r\n                this.error = error;\r\n                this.totalrecords = undefined;\r\n            })\r\n    }\r\n\r\n    handleSelectedPosition(event) {\r\n        this.showDetails === true ? this.showDetails = false : this.showDetails = true;\r\n        console.log(\"showDetails in parent \", this.showDetails);\r\n        this.detailIsExpanded = true;\r\n\r\n        // console.log(\"position selected\");\r\n        // this.selectedPositionList = [];\r\n        // const selectedPositionId = event.detail.Id;\r\n        // this.selectedPosition = this.allPositions.find(position => position.Id === selectedPositionId);\r\n        // console.log(this.selectedPosition);\r\n        // console.log(Object.keys(this.selectedPosition));\r\n        // Object.keys(this.selectedPosition).forEach(positionKey => {\r\n        //     console.log(\"inside forEach\", positionKey);\r\n        //     // if (!this.utilityRecordFields.includes(positionKey)) {\r\n        //         const cleanKey = positionKey.replace(/(__c|_)/g, \" \");\r\n        //         const newObj = {\r\n        //             \"key\": cleanKey,\r\n        //             \"value\": this.selectedPosition[positionKey]\r\n        //         }\r\n        //         this.selectedPositionList.push(newObj);\r\n        //     // }\r\n        //\r\n        // });\r\n    }\r\n    handleApply(event) {\r\n        const position = event.detail;\r\n        this.dispatchEvent(new CustomEvent(\"apply\", {\r\n            detail: position\r\n        }));\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/lwc/paginatorParent/paginatorParent.js b/src/lwc/paginatorParent/paginatorParent.js
+--- a/src/lwc/paginatorParent/paginatorParent.js	(revision b759d81d7fe5007642e91e04765ee51a6409b2d1)
++++ b/src/lwc/paginatorParent/paginatorParent.js	(date 1667373586577)
+@@ -3,8 +3,8 @@
+  */
+ 
+ import {api, LightningElement, track} from 'lwc';
+-import getPositionsList from '@salesforce/apex/RecruitmentIntegration.getPositionsList';
+-import getPositionsCount from '@salesforce/apex/RecruitmentIntegration.getPositionsCount';
++import getPositionsList from '@salesforce/apex/JobApplicationHelper.getPositionsList';
++import getPositionsCount from '@salesforce/apex/JobApplicationHelper.getPositionsCount';
+ 
+ export default class PaginatorParent extends LightningElement {
+     @track error;
+@@ -25,12 +25,10 @@
+             this.isSearchChangeExecuted = false;
+             this.searchKey = event.target.value;
+             this.currentpage = 1;
+-            console.log("Current searchWord ", this.searchKey);
+-
+         }
+     }
++
+     renderedCallback() {
+-        console.log("searchKey in paginatorParent", this.searchKey);
+         // let rightNow = new Date();
+         // rightNow.setMinutes(
+         //     new Date().getMinutes() - new Date().getTimezoneOffset()
+@@ -39,9 +37,6 @@
+         // this.maxPostedDate = new Date("2000-01-01");
+ 
+         if (this.isSearchChangeExecuted && (this.localCurrentPage === this.currentpage)) {
+-            console.log("currentpage", this.currentpage);
+-            console.log("localcurrentpage", this.localCurrentPage);
+-            console.log("isSearchChangeExecuted", this.isSearchChangeExecuted);
+             return;
+         }
+         this.isSearchChangeExecuted = true;
+@@ -50,7 +45,6 @@
+         getPositionsCount({searchString: this.searchKey})
+             .then(recordsCount => {
+                 this.totalrecords = recordsCount;
+-                console.log("recordsCount", recordsCount);
+                 if (recordsCount !== 0 && !isNaN(recordsCount)) {
+                     this.totalpages = Math.ceil(recordsCount / this.pagesize);
+                     getPositionsList({
+@@ -60,7 +54,6 @@
+                         searchString: this.searchKey
+                     })
+                         .then(positionList => {
+-                            console.log("getPositionList successfullt");
+                             this.allPositions = positionList;
+                             this.error = undefined;
+                         })
+@@ -86,7 +79,6 @@
+ 
+     handleSelectedPosition(event) {
+         this.showDetails === true ? this.showDetails = false : this.showDetails = true;
+-        console.log("showDetails in parent ", this.showDetails);
+         this.detailIsExpanded = true;
+ 
+         // console.log("position selected");
+@@ -108,6 +100,7 @@
+         //
+         // });
+     }
++
+     handleApply(event) {
+         const position = event.detail;
+         this.dispatchEvent(new CustomEvent("apply", {
+Index: src/classes/JobApplicationHelper.cls-meta.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/classes/JobApplicationHelper.cls-meta.xml b/src/classes/JobApplicationHelper.cls-meta.xml
+new file mode 100644
+--- /dev/null	(date 1667314130127)
++++ b/src/classes/JobApplicationHelper.cls-meta.xml	(date 1667314130127)
+@@ -0,0 +1,5 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<ApexClass xmlns="http://soap.sforce.com/2006/04/metadata">
++    <apiVersion>55.0</apiVersion>
++    <status>Active</status>
++</ApexClass>
+Index: src/lwc/jobPositionTile/jobPositionTile.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/**\r\n * Created by yurii.bubis on 10/21/2022.\r\n */\r\n\r\nimport {LightningElement, api} from 'lwc';\r\n\r\nexport default class JobPositionTile extends LightningElement {\r\n\r\n    @api position\r\n    @api showDetails;\r\n    @api detailIsExpanded;\r\n    selectedPositionList;\r\n    detailWillRemain;\r\n    utilityRecordFields = [\"Id\", \"Salary__c\", \"Name\"];\r\n\r\n\r\n    selectedPositionHandler(event) {\r\n        event.preventDefault();\r\n        this.showDetails === true ? this.showDetails = false : this.showDetails = true;\r\n        console.log(\"show details after event\", this.showDetails);\r\n        this.selectedPositionList = [];\r\n        // const selectedPositionId = event.detail.Id;\r\n        // this.selectedPosition = this.allPositions.find(position => position.Id === selectedPositionId);\r\n        Object.keys(this.position).forEach(positionKey => {\r\n            if (!this.utilityRecordFields.includes(positionKey)) {\r\n            const cleanKey = positionKey.replace(/(__c|_)/g, \" \") + \":\";\r\n            const newObj = {\r\n                \"key\": cleanKey,\r\n                \"value\": this.position[positionKey]\r\n            }\r\n            this.selectedPositionList.push(newObj);\r\n            // console.log(\"selectedPostionList size is \", this.selectedPositionList.length);\r\n            }\r\n        });\r\n\r\n        const selectedEvent = new CustomEvent(\"selectedposition\", {\r\n            detail: {\r\n                Id: this.position.Id,\r\n            }\r\n        });\r\n        this.dispatchEvent(selectedEvent);\r\n    }\r\n    addPositionToSelected() {\r\n        this.dispatchEvent(new CustomEvent('apply', {\r\n            detail: this.position\r\n        }));\r\n\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/lwc/jobPositionTile/jobPositionTile.js b/src/lwc/jobPositionTile/jobPositionTile.js
+--- a/src/lwc/jobPositionTile/jobPositionTile.js	(revision b759d81d7fe5007642e91e04765ee51a6409b2d1)
++++ b/src/lwc/jobPositionTile/jobPositionTile.js	(date 1667328070515)
+@@ -17,19 +17,18 @@
+     selectedPositionHandler(event) {
+         event.preventDefault();
+         this.showDetails === true ? this.showDetails = false : this.showDetails = true;
+-        console.log("show details after event", this.showDetails);
+         this.selectedPositionList = [];
+         // const selectedPositionId = event.detail.Id;
+         // this.selectedPosition = this.allPositions.find(position => position.Id === selectedPositionId);
+         Object.keys(this.position).forEach(positionKey => {
+             if (!this.utilityRecordFields.includes(positionKey)) {
+-            const cleanKey = positionKey.replace(/(__c|_)/g, " ") + ":";
+-            const newObj = {
+-                "key": cleanKey,
+-                "value": this.position[positionKey]
+-            }
+-            this.selectedPositionList.push(newObj);
+-            // console.log("selectedPostionList size is ", this.selectedPositionList.length);
++                const cleanKey = positionKey.replace(/(__c|_)/g, " ") + ":";
++                const newObj = {
++                    "key": cleanKey,
++                    "value": this.position[positionKey]
++                }
++                this.selectedPositionList.push(newObj);
++                // console.log("selectedPostionList size is ", this.selectedPositionList.length);
+             }
+         });
+ 
+@@ -40,6 +39,7 @@
+         });
+         this.dispatchEvent(selectedEvent);
+     }
++
+     addPositionToSelected() {
+         this.dispatchEvent(new CustomEvent('apply', {
+             detail: this.position

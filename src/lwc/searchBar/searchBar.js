@@ -7,16 +7,25 @@ import getPositionsList from '@salesforce/apex/JobApplicationHelper.getPositions
 import getPositionsCount from '@salesforce/apex/JobApplicationHelper.getPositionsCount';
 import {CurrentPageReference} from "lightning/navigation";
 import {fireEvent, registerListener, unregisterAllListeners} from "c/pubsub";
+import Page_size from "@salesforce/label/c.Page_size";
+import Minimal_salary from "@salesforce/label/c.Minimal_salary";
+import Publication_date from "@salesforce/label/c.Publication_date";
+import Search_by_position_name from "@salesforce/label/c.Search_by_position_name";
+
 
 export default class SearchBar extends LightningElement {
     searchKey;
     maxPostedDate;
     minSalary;
     today;
-    pagesize = 5;
-    currentpage = 1;
-    totalrecords;
-    totalpages;
+    pageSize = 5;
+    currentPage = 1;
+    totalRecords;
+    totalPages;
+    pageSizeLabel = Page_size;
+    minSalaryLabel = Minimal_salary;
+    publicationDateLabel = Publication_date;
+    searchLabel = Search_by_position_name;
     @wire(CurrentPageReference) pageRef;
 
     get comboboxOptions() {
@@ -41,30 +50,30 @@ export default class SearchBar extends LightningElement {
     }
 
     handlePage(event) {
-        this.currentpage = event;
+        this.currentPage = event;
         this.performSearch();
     }
     handleComboboxChange(event) {
-        this.pagesize = event.detail.value;
-        this.currentpage = 1;
+        this.pageSize = event.detail.value;
+        this.currentPage = 1;
         this.performSearch();
     }
 
     handleSearchChange(event) {
         if (this.searchKey !== event.target.value) {
             this.searchKey = event.target.value;
-            this.currentpage = 1;
+            this.currentPage = 1;
             this.performSearch(600);
         }
     }
     handleSliderChange(event) {
         this.minSalary = event.detail.value;
-        this.currentpage = 1;
+        this.currentPage = 1;
         this.performSearch(600);
     }
     handleDateChange(event) {
         this.maxPostedDate = new Date(event.detail.value);
-        this.currentpage = 1;
+        this.currentPage = 1;
         this.performSearch();
     }
     performSearch(delay = 0) {
@@ -79,34 +88,32 @@ export default class SearchBar extends LightningElement {
             maxPostedDate: this.maxPostedDate
         })
             .then(recordsCount => {
-                this.totalrecords = recordsCount;
+                this.totalRecords = recordsCount;
                 if (recordsCount !== 0 && !isNaN(recordsCount)) {
-                    this.totalpages = Math.ceil(recordsCount / this.pagesize);
+                    this.totalPages = Math.ceil(recordsCount / this.pageSize);
                     this.getList();
                 } else {
                     this.allPositions = [];
-                    this.totalpages = 1;
-                    this.totalrecords = 0;
+                    this.totalPages = 1;
+                    this.totalRecords = 0;
                 }
             })
             .catch(error => {
                 this.error = error;
-                this.totalrecords = undefined;
+                this.totalRecords = undefined;
             });
     }
 
     getList() {
         getPositionsList({
-            pagenumber: this.currentpage, numberOfRecords: this.totalrecords,
-            pageSize: this.pagesize, searchString: this.searchKey,
-            salary: this.minSalary,
-            maxPostedDate: this.maxPostedDate
+            pageNumber: this.currentPage, pageSize: this.pageSize, searchString: this.searchKey,
+            salary: this.minSalary, maxPostedDate: this.maxPostedDate
         })
             .then(positionList => {
                 this.allPositions = positionList;
                 this.error = undefined;
                 this.fireSearchEvent();
-                this.currentpage = 1;
+                this.currentPage = 1;
             })
             .catch(error => {
                 this.error = error;
@@ -116,12 +123,11 @@ export default class SearchBar extends LightningElement {
     fireSearchEvent() {
         fireEvent(this.pageRef, "search", {
             allPositions: this.allPositions,
-            recordsCount: this.totalrecords,
-            currentPage: this.currentpage,
-            pagesize: this.pagesize
+            recordsCount: this.totalRecords,
+            currentPage: this.currentPage,
+            pageSize: this.pageSize
         });
     }
-
 
     disconnectedCallback() {
         unregisterAllListeners(this);

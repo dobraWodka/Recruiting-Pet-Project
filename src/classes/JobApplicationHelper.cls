@@ -4,8 +4,7 @@
 
 public with sharing class JobApplicationHelper {
     @AuraEnabled(Cacheable=true)
-    public static List<Position__c> getPositionsList(Integer pagenumber,
-            Integer numberOfRecords, Integer pageSize,
+    public static List<Position__c> getPositionsList(Integer pageNumber, Integer pageSize,
             String searchString, Integer salary, String maxPostedDate) {
         String searchKey = '';
         if (searchString != null) searchKey = searchString;
@@ -19,7 +18,7 @@ public with sharing class JobApplicationHelper {
         if (maxPostedDate != null) {
             query += ' and CreatedDate > ' + maxPostedDate;
         }
-        query += ' limit ' + pageSize + ' offset ' + (pageSize * (pagenumber - 1));
+        query += ' limit ' + pageSize + ' offset ' + (pageSize * (pageNumber - 1));
 
         try {
             List<Position__c> positions = Database.query(query);
@@ -57,19 +56,27 @@ public with sharing class JobApplicationHelper {
     }
 
     @AuraEnabled
-    public static String processApplication(String candidateJson, String imageJson, String selectedPositionsIds) {
-        String savedRecordId = saveCandidate(candidateJson);
-        String savedImageId = saveContentVersion(imageJson, savedRecordId);
-        createJunctionObjects(selectedPositionsIds, savedRecordId);
-
-        return 'Alles gut!';
+    public static void processApplication(String candidateJson, String imageJson, String selectedPositionsIds) {
+        Savepoint savePoint = Database.setSavepoint();
+        try {
+            String savedRecordId = saveCandidate(candidateJson);
+            saveContentVersion(imageJson, savedRecordId);
+            createJunctionObjects(selectedPositionsIds, savedRecordId);
+        } catch (Exception e) {
+            System.debug('Unexpected error occurred ' + e);
+            Database.rollback(savePoint);
+        }
     }
 
     private static Id saveCandidate(String candidateJson) {
         Candidate__c can = (Candidate__c) JSON.deserialize(candidateJson, Candidate__c.class);
-        Database.SaveResult result = Database.insert(can);
-
-        return result.id;
+       try {
+           Database.SaveResult result = Database.insert(can);
+           return result.id;
+       } catch (DmlException e) {
+           System.debug(e);
+           return null;
+       }
     }
     private static Id saveContentVersion(String imageJson, Id relatedRecordId) {
         Map<String, Object> imageMap = (Map<String, Object>) JSON.deserializeUntyped(imageJson);
@@ -81,9 +88,14 @@ public with sharing class JobApplicationHelper {
         contentVersion.ContentLocation = 's';
         contentVersion.PathOnClient = '.jpg';
         contentVersion.FirstPublishLocationId = relatedRecordId;
-        Database.SaveResult result = Database.insert(contentVersion);
 
-        return result.id;
+        try {
+            Database.SaveResult result = Database.insert(contentVersion);
+            return result.id;
+        } catch (DmlException e) {
+            System.debug(e);
+            return null;
+        }
     }
 
     private static void createJunctionObjects(String selectedPositionsIds, Id candidateId) {
@@ -102,8 +114,8 @@ public with sharing class JobApplicationHelper {
         try {
             List<Database.SaveResult> result = Database.insert(positionCandidates);
             System.debug(result.size());
-        } catch (Exception e) {
-            System.debug('Error occured' + e);
+        } catch (DmlException e) {
+            System.debug('Error occurred' + e);
         }
 
     }
