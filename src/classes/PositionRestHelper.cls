@@ -5,7 +5,7 @@
 public with sharing class PositionRestHelper {
     public static PositionRestWrapper deserializeJSONIntoMaps(List<String> bodyList) {
         List<Candidate__c> candidatesToInsert = new List<Candidate__c>();
-        Map<Id, List<Position__c>> candidatePostitionMap = new Map<Id, List<Position__c>>();
+        Map<Id, List<Position__c>> candidatePositionMap = new Map<Id, List<Position__c>>();
         Map<Id, ContentVersion> candidateToImage = new Map<Id, ContentVersion>();
 
         for (String candidateObj : bodyList) {
@@ -22,7 +22,7 @@ public with sharing class PositionRestHelper {
             candidatesToInsert.add(candidate);
 
             List<Position__c> relatedPositions = deserializePosition(positionIdsJson);
-            candidatePostitionMap.put(candidate.Communities_Org_Id__c, relatedPositions);
+            candidatePositionMap.put(candidate.Communities_Org_Id__c, relatedPositions);
 
             ContentVersion cv = deserializeContentVersion(imageJson);
             candidateToImage.put(candidate.Communities_Org_Id__c, cv);
@@ -30,7 +30,7 @@ public with sharing class PositionRestHelper {
         PositionRestWrapper wrapper = new PositionRestWrapper();
         wrapper.candidates = candidatesToInsert;
         wrapper.image = candidateToImage;
-        wrapper.relatedPositions = candidatePostitionMap;
+        wrapper.relatedPositions = candidatePositionMap;
 
         return wrapper;
     }
@@ -41,29 +41,41 @@ public with sharing class PositionRestHelper {
         for (Database.SaveResult result : results) {
             insertedCandidateIds.add(result.id);
         }
-        return [
-                SELECT Id, Name, Communities_Org_Id__c
-                FROM Candidate__c
-                WHERE Id IN :insertedCandidateIds
-        ];
-
+        if (!insertedCandidateIds.isEmpty()){
+            try {
+                return [
+                        SELECT Id, Name, Communities_Org_Id__c
+                        FROM Candidate__c
+                        WHERE Id IN :insertedCandidateIds
+                ];
+            } catch (QueryException e ) {
+                System.debug(e);
+                return null;
+            }
+        } else {
+            return null;
+        }
     }
     public static void insertPositionCandidates(List<Candidate__c> candidates,
             Map<Id, List<Position__c>> candidateIdToRelatedPositions) {
-        List<Positon_Candidate__c> positonCandidatesToInsert = new List<Positon_Candidate__c>();
+        List<Position_Candidate__c> positionCandidatesToInsert = new List<Position_Candidate__c>();
 
         for (Candidate__c can : candidates) {
             for (Position__c position : candidateIdToRelatedPositions.get(can.Communities_Org_Id__c)) {
-                Positon_Candidate__c posCan = new Positon_Candidate__c(
+                Position_Candidate__c posCan = new Position_Candidate__c(
                         Name = can.Name + 'for position ' + position.Name,
                         Candidate__c = can.Id,
                         Position__c = position.Id
                 );
-                positonCandidatesToInsert.add(posCan);
+                positionCandidatesToInsert.add(posCan);
             }
         }
-        if (positonCandidatesToInsert.size() > 0) {
-           insert positonCandidatesToInsert;
+        if (positionCandidatesToInsert.size() > 0) {
+            try {
+                insert positionCandidatesToInsert;
+            } catch (DmlException e) {
+                System.debug(e);
+            }
         }
     }
 
@@ -97,14 +109,18 @@ public with sharing class PositionRestHelper {
         contentVersion.Title = imageJsonMap.get('Title').toString();
         contentVersion.ContentLocation = 's';
         contentVersion.PathOnClient = imageJsonMap.get('PathOnClient').toString();
-//        contentVersion.FirstPublishLocationId = candidateId;
 
         return contentVersion;
 
     }
     private static List<Position__c> deserializePosition(String positionIdsJson) {
         List<Id> positionIds = (List<Id>) JSON.deserialize(positionIdsJson, List<String>.class);
-        List<Position__c> positions = [SELECT Name FROM Position__c WHERE Id IN :positionIds];
-        return positions;
+        try {
+            List<Position__c> positions = [SELECT Name FROM Position__c WHERE Id IN :positionIds];
+            return positions;
+        } catch (QueryException e) {
+            System.debug(e);
+            return null;
+        }
     }
 }

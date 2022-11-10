@@ -18,12 +18,15 @@ global with sharing class PositionRestController {
     @HttpPost
     global static void insertPositions() {
         String requestBody = RestContext.request.requestBody.toString();
+        System.debug(requestBody);
 
         List<String> bodyList = (List<String>) JSON.deserialize(requestBody, List<String>.class);
+        System.debug(bodyList.size());
 
         PositionRestWrapper wrapper = PositionRestHelper.deserializeJSONIntoMaps(bodyList);
 
         List<Candidate__c> insertedCandidates = PositionRestHelper.insertCandidatesAndReturnWithId(wrapper.candidates);
+        System.debug(insertedCandidates.size());
 
         PositionRestHelper.insertContentVersion(insertedCandidates, wrapper.image);
         PositionRestHelper.insertPositionCandidates(insertedCandidates, wrapper.relatedPositions);

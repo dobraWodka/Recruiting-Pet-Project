@@ -7,9 +7,7 @@ import setImageUrl from '@salesforce/apex/ImageDisplayHelper.setImageUrl';
 export default class ImageDisplayer extends LightningElement {
     @api recordId;
     image;
-    // @wire (setImageUrl, {recordId: '$recordId'})
-    // image;
-    renderedCallback() {
+    connectedCallback() {
         setImageUrl({recordId: this.recordId})
             .then(image => {
                 this.image = image

@@ -14,23 +14,44 @@ public with sharing class ImageDisplayHelper {
             lstConDocs.add(cntLink.ContentDocumentId);
         }
         if (!lstConDocs.isEmpty()) {
-            ContentDistribution cdl = new ContentDistribution();
-            cdl.ContentVersionId = [
-                    SELECT Id, Title, ContentDocumentId
-                    FROM ContentVersion
-                    WHERE ContentDocumentId IN :lstConDocs
-                    LIMIT 1
-            ].Id;
-            cdl.Name = 'PublicShare';
-            insert cdl;
-            String cd = [
-                    SELECT DistributionPublicUrl, ContentDownloadUrl
-                    FROM ContentDistribution
-                    WHERE Id = :cdl.Id
-                    LIMIT 1
-            ].ContentDownloadUrl;
-            System.debug(cd);
-            return cd;
+            try {
+                String contentVersionId = [
+                        SELECT Id, Title, ContentDocumentId
+                        FROM ContentVersion
+                        WHERE ContentDocumentId IN :lstConDocs
+                        LIMIT 1
+                ].Id;
+                String contentDownloadUrl = [
+                        SELECT Id, ContentDownloadUrl
+                        FROM  ContentDistribution
+                        WHERE ContentVersionId = :contentVersionId
+                ].ContentDownloadUrl;
+                return contentDownloadUrl;
+            } catch (QueryException ex) {
+                System.debug('Creating New Content Distribution');
+                ContentDistribution cdl = new ContentDistribution();
+                cdl.ContentVersionId = [
+                        SELECT Id, Title, ContentDocumentId
+                        FROM ContentVersion
+                        WHERE ContentDocumentId IN :lstConDocs
+                        LIMIT 1
+                ].Id;
+                cdl.Name = 'PublicShare1';
+                try {
+                    Database.SaveResult result = Database.insert(cdl);
+                    System.debug(result);
+                } catch (DmlException e) {
+                    System.debug('Dml Exception occurred: ' + e);
+                }
+                String cd = [
+                        SELECT DistributionPublicUrl, ContentDownloadUrl
+                        FROM ContentDistribution
+                        WHERE Id = :cdl.Id
+                        LIMIT 1
+                ].ContentDownloadUrl;
+                System.debug(cd);
+                return cd;
+            }
         } else {
             return null;
         }
